@@ -30,7 +30,7 @@ ENGINE_OBJ=$(SRCENGINE)/anim.o \
 		   $(SRCENGINE)/scene.o \
 		   $(SRCENGINE)/ressourcemanager.o \
 		   $(SRCENGINE)/mixer.o
-OBJ=main.o \
+OBJ=$(SRC)/shape.o \
 	$(ENGINE_OBJ) \
 	$(LIBWAM_OBJ) \
 	$(GUI_OBJ) \
@@ -41,7 +41,7 @@ LFLAGS=-Le:\opt\SFML\lib -lsfml-main -lsfml-system -lsfml-graphics -lsfml-window
 
 EXEC=$(BIN)/main.exe
 
-all: $(EXEC)
+all: $(OBJ)
 
 %.o:%.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)

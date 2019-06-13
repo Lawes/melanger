@@ -3,10 +3,6 @@
 #include <cmath>
 
 namespace wam {
-    const float pi			= 3.14159265358979f;
-    const float rad2Deg		= 57.29578f;
-    const float deg2Rad		= 0.01745329f;
-
 	Vector2 Vector2::zero = Vector2(0,0);
 	Vector2 Vector2::one = Vector2(1,1);
 	Vector2 Vector2::up = Vector2(0, -1); //2d style

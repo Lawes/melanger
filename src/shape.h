@@ -1,89 +1,61 @@
 #ifndef SHAPE_HEADER
 #define SHAPE_HEADER
 
-#include "Vector2.h"
-#include "Color.h"
-
-
-struct Rect {
-    VODZO::Vector2 p1, p2, p3, p4;
-
-    void doTransformation(const float angle, 
-        const float scale, const VODZO::Vector2& trans);
-
-    bool in( const VODZO::Vector2& p);
-
-};
-
+#include <SFML/Graphics.hpp>
 
 class Shape {
-private:
-    int id_;
-    Rect m_pt, m_cadre;
+    public:
+        struct State {
+            int id, ipos, irot;
+            bool isMoving, isRotating, isSeleted;
+        };
 
-    VODZO::Color color_;
-    unsigned int idTexture_, ;
+    private:
+        State m_state;
+        sf::VertexArray m_pt, m_cadre, m_select;
+        sf::Vector2f m_translate;
+        float m_theta, m_scale;
+        sf::Texture *m_bord, *m_img;
 
-    VODZO::Vector2 translate_;
-    float theta_, scale_;
-	bool selected_;
+        static float _getRotation(int irot) {
+            return static_cast<float>(irot)*90.0f;
+        }
 
-    static int currentId;
-    static unsigned int idCadre_;
+    public:
+        Shape();
 
-public:
-    enum TransType{
-        TRANSLATION = 0,
-        ROTATION=1
-    };
+        State& getState() {
+            return m_state;
+        }
 
-    static void ClearId() {
-        currentId = 0;
-    }
+        bool good() const;
+        bool isFixed() const;
+        void moveTo(int newipos );
+        void rotatePlus();
+        void rotateMinus();
+        bool endMove();
+        bool endRotation();
 
-    static void setIdCadre(unsigned int id) {
-        idCadre_ = id;
-    }
+        void init(int id, int ipos, int rotation, sf::Vector2f& v, float size);
 
-    Shape();
-    Shape(const unsigned int id);
+        void select(bool b) { m_state.isSeleted = b; }
+        bool isSelected() const { return m_state.isSeleted;}
+        sf::Vector2f *getTranslate() { return &m_translate; }
+        float *getRotate() { return &m_theta; }
 
-    int id(TransType t) {
-        return id_*2 + t;
-    }
+        void setTexture(sf::Texture *img, sf::Texture *bord);
+        void setTextcoords(const sf::FloatRect& rect, const sf::Vector2f& scadre);
+        void setColor( const sf::Color& color);
 
-    int id() {
-        return id_;
-    }
+        void setTransform(const sf::Vector2f& t, float angle, float scale);
+        void setTranslate( const sf::Vector2f& t) { m_translate = t; }
+        void update();
 
-    VODZO::Vector2 *getTranslate() {
-        return &translate_;
-    }
+        void doTransformation(float angle, float scale, const sf::Vector2f& t);
 
-    float *getRotate() {
-        return &theta_;
-    }
+        bool in(const sf::Vector2f& p) const;
 
-    void setIdTexture(unsigned int id) {
-        idTexture_ = id;
-    }
-
-    unsigned int getIdTexture() {
-        return idTexture_;
-    }
-
-    void setColor( const VODZO::Color& color) {
-        color_ = color;
-    }
-
-	void set_select(bool b) { selected_ = b; }
-
-    void setTransform(const VODZO::Vector2& t, const float angle, const float scale);
-    void setTranslate( const VODZO::Vector2& t) { translate_ = t; }
-    void apply();
-    bool in(const VODZO::Vector2& p);
-    void draw();
-
+        void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 #endif

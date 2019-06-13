@@ -1,138 +1,166 @@
-#include "shape.h"
-#include "Vector2.h"
-#include "Color.h"
-#include "global.h"
-
 #include <cmath>
+#include <SFML/OpenGL.hpp>
 
-#include <SDL/SDL_opengl.h>
+#include "shape.h"
+#include "libwam/geometry.h"
 
-using namespace VODZO;
-
-int Shape::currentId = 0;
-unsigned int Shape::idCadre_ = 0;
-
-int
-SIAM( const Vector2& p0, const Vector2& p1, const Vector2& p2) 
-{
-	float dx1, dx2, dy1, dy2;
-
-	dx1=p1.x-p0.x; dy1=p1.y-p0.y;
-	dx2=p2.x-p0.x; dy2=p2.y-p0.y;
-
-	if( dx1*dy2 > dy1*dx2 ) return 1;
-	if( dx1*dy2 < dy1*dx2 ) return -1;
-	if( (dx1*dx2 < 0.0) || (dy1*dy2 < 0.0) ) return -1;
-	if( (dx1*dx1+dy1*dy1) < (dx2*dx2+dy2*dy2) ) return 1;
-
-	return 0;
-}
-
-
-void doRotation(Vector2& pRot,  const float cs, const float sn, const Vector2& p) {
+template<class V>
+void doRotation(V& pRot,  float cs, float sn, const V& p) {
     pRot.x = cs * p.x - sn * p.y;
     pRot.y = sn * p.x + cs * p.y;
-
 }
 
-
-void Rect::doTransformation(const float angle, 
-    const float scale, const Vector2& trans) {
-
-    float cs = cos(angle*deg2Rad);
-    float sn = sin(angle*deg2Rad);
-
-    doRotation(p1, cs, sn, Vector2(1,1));
-    p1 *= scale;
-    doRotation(p2, cs, sn, Vector2(-1,1));
-    p2 *= scale;
-//    doRotation(p3, cs, sn, Vector2(-1,-1));
-//    p3 *= scale;
-//    doRotation(p4, cs, sn, Vector2(1,-1));
-//    p4 *= scale;
-
-    p3 = -p1;
-    p4 = -p2;
-    
-    p1 += trans;
-    p2 += trans;
-    p3 += trans;
-    p4 += trans;
-
-
+Shape::Shape():
+	m_state{0,0,0, false, false, false},
+	m_pt(sf::Quads, 4),
+	m_cadre(sf::Quads, 4),
+	m_select(sf::LineStrip, 4),
+	m_translate(0,0),
+	m_theta(0),
+	m_scale(1.0),
+	m_bord(nullptr),
+	m_img(nullptr)
+{
+	setColor(sf::Color::Black);
 }
 
-bool Rect::in(const Vector2& p) {
-    return (SIAM(p1, p2, p) >=0 && SIAM(p2, p3, p) >= 0 &&
-       SIAM(p3, p4, p) >= 0 && SIAM(p4, p1, p) >= 0);
+bool Shape::good() const {
+	return m_state.ipos == m_state.id
+		&& m_state.irot == 0
+		&& isFixed();
 }
 
-
-Shape::Shape(): id_(0), color_(Color::black), idTexture_(0), translate_(0,0), theta_(0),  scale_(1.0), selected_(false)  {
-    id_ = ++currentId;
-    
+bool Shape::isFixed() const {
+	return !m_state.isMoving && !m_state.isRotating;
 }
 
-Shape::Shape(const unsigned int id): id_(0), color_(Color::black), idTexture_(id), translate_(0,0), theta_(0),  scale_(1.0), selected_(false) {
-    id_ = ++currentId;
-    
+bool Shape::endMove() {
+	m_state.isMoving = false;
+	if( isFixed() ) setColor(sf::Color::Black);
+	return good();
 }
 
-void Shape::setTransform(const Vector2& t, const float angle, const float scale=1.0) {
-    translate_ = t;
-    theta_ = angle;
-    scale_ = scale;
+bool Shape::endRotation() {
+	m_state.isRotating = false;
+	m_state.irot = m_state.irot%4;
+	m_theta = Shape::_getRotation(m_state.irot);
+	if( isFixed() ) setColor(sf::Color::Black);
+	return good();
 }
 
-
-void Shape::apply() {
-    m_pt.doTransformation(theta_, scale_, translate_);
-    m_cadre.doTransformation(theta_, scale_ + 6 *scale_/43, translate_);
-
+void Shape::moveTo(int pos) {
+	m_state.ipos = pos;
+	m_state.isMoving = true;
+	setColor(sf::Color::Red);
 }
 
-bool Shape::in( const Vector2& p) {
-    return m_pt.in(p);
+void Shape::rotatePlus() {
+	m_state.irot += 1;
+	m_state.isRotating = true;
+	setColor(sf::Color::Red);
 }
 
-void Shape::draw() {
+void Shape::rotateMinus() {
+	m_state.irot -= 1;
+	m_state.isRotating = true;
+	setColor(sf::Color::Red);
+}
 
-    glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, idTexture_);
-    glColor3d(1,1,1);
-	glBegin(GL_QUADS);
-		glTexCoord2d(1, 1); glVertex2fv(&m_pt.p1.x);
-		glTexCoord2d(0, 1); glVertex2fv(&m_pt.p2.x);
-		glTexCoord2d(0, 0); glVertex2fv(&m_pt.p3.x);
-		glTexCoord2d(1, 0); glVertex2fv(&m_pt.p4.x);
-	glEnd();
+void Shape::init(int id, int ipos, int irot, sf::Vector2f& v, float size) {
+	m_state = {id, ipos, irot, false, false, false};
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBindTexture(GL_TEXTURE_2D, idCadre_);
+	setTransform(v, Shape::_getRotation(irot), size);
+	update();
+}
 
-	glColor3fv(&color_.r);
-    
-	glBegin(GL_QUADS);
-		glTexCoord2d(1, 1); glVertex2fv(&m_cadre.p1.x);
-		glTexCoord2d(0, 1); glVertex2fv(&m_cadre.p2.x);
-		glTexCoord2d(0, 0); glVertex2fv(&m_cadre.p3.x);
-		glTexCoord2d(1, 0); glVertex2fv(&m_cadre.p4.x);
-	glEnd();
+void Shape::setTexture(sf::Texture *img, sf::Texture *bord) {
+	m_bord = bord;
+	m_img = img;
 
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
+	auto size = m_bord->getSize();
+	m_cadre[0].texCoords = sf::Vector2f(0,0);
+	m_cadre[1].texCoords = sf::Vector2f(size.x,0);
+	m_cadre[2].texCoords = sf::Vector2f(size.x,size.y);
+	m_cadre[3].texCoords = sf::Vector2f(0,size.y);	
+}
 
-	if( selected_ ) {
-		Color col = Color::blue;
+void Shape::setTextcoords(const sf::FloatRect& rect, const sf::Vector2f& scadre) {
+	m_pt[0].texCoords = sf::Vector2f(rect.left, rect.top);
+	m_pt[1].texCoords = sf::Vector2f(rect.left+rect.width, rect.top);
+	m_pt[2].texCoords = sf::Vector2f(rect.left+rect.width, rect.top+rect.height);
+	m_pt[3].texCoords = sf::Vector2f(rect.left, rect.top+rect.height);
+}
+
+void setColorInVA(sf::VertexArray &va, sf::Color col) {
+	for(size_t i=0; i<va.getVertexCount(); ++i)
+		va[i].color = col;
+}
+
+void Shape::setColor(const sf::Color& col) {
+	setColorInVA(m_cadre, col);
+}
+
+void Shape::setTransform(const sf::Vector2f& t, float angle, float scale=1.0) {
+    m_translate = t;
+    m_theta = angle;
+    m_scale = scale;
+}
+
+void Shape::update() {
+	doTransformation(m_theta, m_scale, m_translate);
+}
+
+bool Shape::in( const sf::Vector2f& p) const {
+	return ptInShape(
+		p,
+		m_pt[0].position, m_pt[1].position,
+		m_pt[2].position, m_pt[3].position);
+}
+
+void Shape::doTransformation(
+	float angle, 
+	float scale,
+	const sf::Vector2f& trans) 
+{
+    const float deg2Rad	= 0.01745329f;
+	float scadre = scale + 6 *scale/43;
+    float cs = std::cos(angle*deg2Rad);
+    float sn = std::sin(angle*deg2Rad);
+
+    doRotation(m_pt[0].position, cs, sn, sf::Vector2f(1,1));
+	m_cadre[0].position = m_pt[0].position * scadre;
+    m_pt[0].position *= scale;
+    doRotation(m_pt[1].position, cs, sn, sf::Vector2f(-1,1));
+	m_cadre[1].position = m_pt[1].position * scadre;	
+    m_pt[1].position *= scale;
+
+	m_cadre[2].position = -m_cadre[0].position + trans;
+	m_cadre[3].position = -m_cadre[1].position + trans;
+	m_cadre[0].position += trans;
+	m_cadre[1].position += trans;
+
+    m_pt[2].position = -m_pt[0].position + trans;
+    m_pt[3].position = -m_pt[1].position + trans;    
+    m_pt[0].position += trans;
+    m_pt[1].position += trans;
+
+	for(size_t i=0; i<4; ++i)
+		m_select[i].position = m_pt[i].position;
+	setColorInVA(m_select, sf::Color::Blue);
+	
+}
+
+void Shape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+	states.texture = m_img;
+	target.draw(m_pt, states);
+
+	states.texture = m_bord;
+	target.draw(m_cadre, states);
+
+	if( isSelected() ) {
+		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(3.0);
-		glColor3fv(&col.r);
-		glBegin(GL_LINE_LOOP);
-		glVertex2fv(&m_pt.p1.x);
-		glVertex2fv(&m_pt.p2.x);
-		glVertex2fv(&m_pt.p3.x);
-		glVertex2fv(&m_pt.p4.x);
-		glEnd();
+		target.draw(m_select, states);
 	}
 }
 
