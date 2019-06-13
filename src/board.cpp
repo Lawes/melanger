@@ -22,6 +22,17 @@ using namespace std;
 using namespace VODZO;
 using gui::Box;
 
+Board::Board():
+    tween(),
+    select1(-1),
+    select2(-1),
+    select(-1),
+    pressed(false),
+    m_nMoves(0),
+    m_taille(10) 
+{
+    
+}
 
 Board::~Board() {
     clear();

@@ -4,29 +4,15 @@
 #include <vector>
 #include <string>
 #include <list>
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
 
-#include "Vector2.h"
-#include "state.h"
 #include "tweenId.h"
 #include "shape.h"
-
-namespace VODZO {
-    class CInput;
-    class Vector2;
-}
-
-namespace gui {
-    class Box;
-}
-
 
 
 class Board {
 
     public:
-        Board(): tween(), select1(-1), select2(-1), select(-1), pressed(false), m_nMoves(0), m_taille(10) {}
+        Board();
         virtual ~Board();
 
         void init(const std::string& fileName, const gui::Box& box);
