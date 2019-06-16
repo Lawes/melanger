@@ -2,6 +2,7 @@
 #define INTERVALS_HEADER
 
 #include <list>
+#include <map>
 #include <string>
 #include <functional>
 #include <memory>
@@ -20,8 +21,12 @@ class Interval {
         virtual ~Interval();
 
         void start();
+        void finish();
         void loop() { m_loop = true; }
-        virtual void finish() { m_isFinished = true; }
+
+
+
+
         virtual bool isFinished() { return m_isFinished; }
         bool update(float dt);
         void pause() { m_inPause=true; }
@@ -30,36 +35,35 @@ class Interval {
     private:
         virtual bool _update() = 0;
         virtual void _start() {};
+        virtual void _finish() {}
 
 };
-
-class PopUp : public Interval {
-    private:
-        bool _update() {return false;}
-};
-
 
 class IntervalAction : public Interval {
     private:
-        float m_timeElapsed, m_timeLimit, m_p;
+        FuncType m_execStart, m_execFinish;
+        float m_timeElapsed, m_timeLimit;
 
     public:
-        IntervalAction(const float t) : m_timeElapsed(0.0), m_timeLimit(t), m_p(0.0)  {};
-        virtual void finish();
+        IntervalAction(float t);
+        IntervalAction(FuncType f);
+
+        void setStartFunc(FuncType f) {
+            m_execStart = f;
+        }
+
+        void setFinishFunc(FuncType f) {
+            m_execFinish = f;
+        }
 
     private:
-        virtual void _doAction(float p) = 0;
+        virtual void _doAction(float p) { }
         virtual bool _update();
         virtual void _start();
-
+        virtual void _finish();
 };
 
-class Wait : public IntervalAction {
-    public:
-        Wait(const float f) : IntervalAction(f) {}
-    private:
-        virtual void _doAction(float p)  {}
-};
+typedef IntervalAction Wait;
 
 class SimpleFunc : public IntervalAction {
     public:
@@ -134,17 +138,18 @@ class Sequence : public IntervalContainer {
         iterator m_itCurrent;
     public:
         Sequence() : m_itCurrent(m_liste.begin()) {}
-        void finish();
+
         bool isFinished();
     private:
+        void _finish();
         bool _update();
         void _start();
 };
 
 class Parallele : public IntervalContainer {
     public:
-        void finish();
     private:
+        void _finish();
         bool _update();
         void _start();
 };
@@ -153,9 +158,15 @@ class Parallele : public IntervalContainer {
 class Organizer {
     private:
         typedef Interval::PtrInterval PtrInterval;
-        typedef  std::list<PtrInterval> ListInterval;
+        typedef std::list<PtrInterval> ListInterval;
+        typedef std::map<int, PtrInterval> MapInterval;
+
         bool m_isRunning;
-        ListInterval m_liste;
+        ListInterval m_list;
+        MapInterval m_map;
+
+        void update_list(float dt);
+        void update_map(float dt);
 
     public:
         Organizer() : m_isRunning(false) {}

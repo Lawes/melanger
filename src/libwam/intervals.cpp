@@ -14,6 +14,11 @@ void Interval::start() {
     _start();
 }
 
+void Interval::finish() {
+    m_isFinished = true;
+    _finish();
+}
+
 bool Interval::update(float dt) {
     m_dt = dt;
     if( m_isFinished ) return true;
@@ -27,14 +32,29 @@ bool Interval::update(float dt) {
     return finishQ;
 }
 
+
+IntervalAction::IntervalAction(float t) :
+    m_execStart([]{}),
+    m_execFinish([]{}),
+    m_timeElapsed(0.0),
+    m_timeLimit(t)
+{ }
+
+IntervalAction::IntervalAction(Interval::FuncType f) :
+    m_execStart(f),
+    m_execFinish([]{}),
+    m_timeElapsed(0.0),
+    m_timeLimit(-1.0)
+{ }
+
 void IntervalAction::_start() {
+    m_execStart();
     m_timeElapsed = 0.0;
-    m_p = 0.0;
 }
 
-void IntervalAction::finish() {
-    Interval::finish();
+void IntervalAction::_finish() {
     m_timeElapsed = m_timeLimit;
+    m_execFinish();
 }
 
 bool IntervalAction::_update() {
@@ -43,8 +63,8 @@ bool IntervalAction::_update() {
     if (m_timeElapsed >= m_timeLimit)
         finish();
 
-    float m_p = (m_timeElapsed/m_timeLimit);
-    _doAction(m_p);
+    float p = (m_timeElapsed/m_timeLimit);
+    _doAction(p);
     return isFinished();
 }
 
@@ -90,8 +110,7 @@ bool Sequence::isFinished() {
     return (m_itCurrent==m_liste.end());
 }
 
-void Sequence::finish() {
-    Interval::finish();
+void Sequence::_finish() {
     m_itCurrent = m_liste.end();
 }
 
@@ -99,8 +118,7 @@ void Parallele::_start() {
     for(auto &ptr:m_liste) ptr->start();
 }
 
-void Parallele::finish() {
-    Interval::finish();
+void Parallele::_finish() {
     for(auto &ptr:m_liste) ptr->finish();
 }
 
@@ -110,47 +128,51 @@ bool Parallele::_update() {
     for(; it != m_liste.end(); ++it)
         finished &= (*it)->update(m_dt);
 
-    if( finished)
-        Interval::finish();
+    if( finished) finish();
 
     return finished;
 
 }
 
 void Organizer::start() {
-    for(auto &iptr:m_liste)
-        iptr->start();
+    for(auto &iptr:m_list) iptr->start();
+    for(auto &item: m_map) item.second->start();
 }
 
 void Organizer::add(Interval *interval) {
     if( m_isRunning) interval->start();
-    m_liste.push_back(PtrInterval(interval));
+    m_list.push_back(PtrInterval(interval));
 }
 
-
-void Organizer::update(float dt) {
+void Organizer::update_list(float dt) {
     std::list<ListInterval::iterator> listeToRemove;
 
-    for (ListInterval::iterator i = m_liste.begin();
-         i != m_liste.end(); ++i) {
+    for (ListInterval::iterator i = m_list.begin();
+         i != m_list.end(); ++i) {
         if( (*i)->update(dt) ) {
             listeToRemove.push_back(i);
         }
     }
 
-    for (auto i:listeToRemove) {
-        //delete *i;
-        m_liste.erase(i);
-    }
+    for (auto i:listeToRemove)
+        m_list.erase(i);
     listeToRemove.clear();
 }
 
+void Organizer::update_map(float dt) {
+    for (auto i = m_map.begin(); i != m_map.end(); ++i) {
+        if( (*i).second->update(dt) ) {
+            i = m_map.erase(i);
+        }
+    }    
+}
+
+void Organizer::update(float dt) {
+    if( !m_list.empty()) update_list(dt);
+    if( !m_map.empty()) update_map(dt);
+}
+
 void Organizer::clear() {
-    //std::cout << "taille = " << m_liste.size() << std::endl;
-    /*
-    for(auto &it:m_liste) {
-        std::cout << "free intervals" << std::endl;
-        //delete it;
-    }*/
-    m_liste.clear();
+    m_list.clear();
+    m_map.clear();
 }
