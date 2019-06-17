@@ -136,6 +136,7 @@ class Organizer {
         }
 
         void start();
+        void finish();
         void update(float dt);
         void clear();
 };

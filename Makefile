@@ -30,18 +30,22 @@ ENGINE_OBJ=$(SRCENGINE)/anim.o \
 		   $(SRCENGINE)/scene.o \
 		   $(SRCENGINE)/ressourcemanager.o \
 		   $(SRCENGINE)/mixer.o
-OBJ=$(SRC)/shape.o \
+OBJ=$(SRC)/main.o \
+	$(SRC)/globals.o \
+	$(SRC)/scene_ext.o \
+	$(SRC)/decorator_ext.o \
+	$(SRC)/boardshape.o \
 	$(ENGINE_OBJ) \
 	$(LIBWAM_OBJ) \
 	$(GUI_OBJ) \
 	$(PSM_OBJ)
 
-CXXFLAGS= -DSFML_STATIC -W -Ie:\opt\SFML\include -Isrc -Isrc/libwam -Isrc/psm -Isrc/gui -Isrc/engine -g
+CXXFLAGS=-DSFML_STATIC -W -Ie:\opt\SFML\include -Isrc -Isrc/libwam -Isrc/psm -Isrc/gui -Isrc/engine -g
 LFLAGS=-Le:\opt\SFML\lib -lsfml-main -lsfml-system -lsfml-graphics -lsfml-window -lsfml-audio -lopengl32
 
 EXEC=$(BIN)/main.exe
 
-all: $(OBJ)
+all: $(EXEC)
 
 %.o:%.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)

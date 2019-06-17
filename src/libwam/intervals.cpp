@@ -135,25 +135,26 @@ void Organizer::start() {
     for(auto &item: m_map) item.second->start();
 }
 
+void Organizer::finish() {
+    for(auto &iptr:m_list) iptr->finish();
+    for(auto &item: m_map) item.second->finish();    
+}
+
 void Organizer::update_list(float dt) {
     m_list.remove_if(
-        [dt](PtrInterval ptr) {
+        [dt](PtrInterval &ptr) {
             return ptr->update(dt);
         }
     );
 }
 
 void Organizer::update_map(float dt) {
-    m_map.erase(
-        remove_if(
-            m_map.begin(),
-            m_map.end(),
-            [dt](PtrInterval ptr) {
-                return ptr->update(dt);
-            }
-        ),
-        m_map.end()
-    ); 
+    for(auto it = m_map.begin(); it != m_map.end();) {
+        if( (*it).second->update(dt))
+            it = m_map.erase(it);
+        else
+            ++it;
+    }
 }
 
 void Organizer::update(float dt) {

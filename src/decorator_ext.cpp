@@ -1,7 +1,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "widget.h"
+#include "gui/widget.h"
 #include "decorator_ext.h"
 #include "globals.h"
 

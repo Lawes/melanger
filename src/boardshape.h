@@ -1,9 +1,9 @@
-#ifndef SHAPE_HEADER
-#define SHAPE_HEADER
+#ifndef BOARDSHAPE_HEADER
+#define BOARDSHAPE_HEADER
 
 #include <SFML/Graphics.hpp>
 
-class Shape {
+class BoardShape : public sf::Drawable {
     public:
         struct State {
             int id, ipos, irot;
@@ -22,7 +22,7 @@ class Shape {
         }
 
     public:
-        Shape();
+        BoardShape();
 
         State& getState() {
             return m_state;
@@ -36,7 +36,7 @@ class Shape {
         bool endMove();
         bool endRotation();
 
-        void init(int id, int ipos, int rotation, sf::Vector2f& v, float size);
+        void init(int id, int ipos, int rotation, const sf::Vector2f& v, float size);
 
         void select(bool b) { m_state.isSeleted = b; }
         bool isSelected() const { return m_state.isSeleted;}
@@ -44,7 +44,7 @@ class Shape {
         float *getRotate() { return &m_theta; }
 
         void setTexture(sf::Texture *img, sf::Texture *bord);
-        void setTextcoords(const sf::FloatRect& rect, const sf::Vector2f& scadre);
+        void setTextcoords(const sf::FloatRect& rect);
         void setColor( const sf::Color& color);
 
         void setTransform(const sf::Vector2f& t, float angle, float scale);

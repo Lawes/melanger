@@ -14,7 +14,7 @@ class TweenerLin : public IntervalAction {
     private:
         T *value_, start, end;
     private:
-        virtual void _doAction(float p) { *value = ((end-st) * p) + st; }
+        virtual void _doAction(float p) { *value_ = ((end-start) * p) + start; }
 };
 
 class TweenCollection : public Organizer {

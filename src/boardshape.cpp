@@ -1,7 +1,7 @@
 #include <cmath>
 #include <SFML/OpenGL.hpp>
 
-#include "shape.h"
+#include "boardshape.h"
 #include "libwam/geometry.h"
 
 template<class V>
@@ -10,7 +10,7 @@ void doRotation(V& pRot,  float cs, float sn, const V& p) {
     pRot.y = sn * p.x + cs * p.y;
 }
 
-Shape::Shape():
+BoardShape::BoardShape():
 	m_state{0,0,0, false, false, false},
 	m_pt(sf::Quads, 4),
 	m_cadre(sf::Quads, 4),
@@ -24,56 +24,56 @@ Shape::Shape():
 	setColor(sf::Color::Black);
 }
 
-bool Shape::good() const {
+bool BoardShape::good() const {
 	return m_state.ipos == m_state.id
 		&& m_state.irot == 0
 		&& isFixed();
 }
 
-bool Shape::isFixed() const {
+bool BoardShape::isFixed() const {
 	return !m_state.isMoving && !m_state.isRotating;
 }
 
-bool Shape::endMove() {
+bool BoardShape::endMove() {
 	m_state.isMoving = false;
 	if( isFixed() ) setColor(sf::Color::Black);
 	return good();
 }
 
-bool Shape::endRotation() {
+bool BoardShape::endRotation() {
 	m_state.isRotating = false;
 	m_state.irot = m_state.irot%4;
-	m_theta = Shape::_getRotation(m_state.irot);
+	m_theta = BoardShape::_getRotation(m_state.irot);
 	if( isFixed() ) setColor(sf::Color::Black);
 	return good();
 }
 
-void Shape::moveTo(int pos) {
+void BoardShape::moveTo(int pos) {
 	m_state.ipos = pos;
 	m_state.isMoving = true;
 	setColor(sf::Color::Red);
 }
 
-void Shape::rotatePlus() {
+void BoardShape::rotatePlus() {
 	m_state.irot += 1;
 	m_state.isRotating = true;
 	setColor(sf::Color::Red);
 }
 
-void Shape::rotateMinus() {
+void BoardShape::rotateMinus() {
 	m_state.irot -= 1;
 	m_state.isRotating = true;
 	setColor(sf::Color::Red);
 }
 
-void Shape::init(int id, int ipos, int irot, sf::Vector2f& v, float size) {
+void BoardShape::init(int id, int ipos, int irot, const sf::Vector2f& v, float size) {
 	m_state = {id, ipos, irot, false, false, false};
 
-	setTransform(v, Shape::_getRotation(irot), size);
+	setTransform(v, BoardShape::_getRotation(irot), size);
 	update();
 }
 
-void Shape::setTexture(sf::Texture *img, sf::Texture *bord) {
+void BoardShape::setTexture(sf::Texture *img, sf::Texture *bord) {
 	m_bord = bord;
 	m_img = img;
 
@@ -84,7 +84,7 @@ void Shape::setTexture(sf::Texture *img, sf::Texture *bord) {
 	m_cadre[3].texCoords = sf::Vector2f(0,size.y);	
 }
 
-void Shape::setTextcoords(const sf::FloatRect& rect, const sf::Vector2f& scadre) {
+void BoardShape::setTextcoords(const sf::FloatRect& rect) {
 	m_pt[0].texCoords = sf::Vector2f(rect.left, rect.top);
 	m_pt[1].texCoords = sf::Vector2f(rect.left+rect.width, rect.top);
 	m_pt[2].texCoords = sf::Vector2f(rect.left+rect.width, rect.top+rect.height);
@@ -96,28 +96,28 @@ void setColorInVA(sf::VertexArray &va, sf::Color col) {
 		va[i].color = col;
 }
 
-void Shape::setColor(const sf::Color& col) {
+void BoardShape::setColor(const sf::Color& col) {
 	setColorInVA(m_cadre, col);
 }
 
-void Shape::setTransform(const sf::Vector2f& t, float angle, float scale=1.0) {
+void BoardShape::setTransform(const sf::Vector2f& t, float angle, float scale=1.0) {
     m_translate = t;
     m_theta = angle;
     m_scale = scale;
 }
 
-void Shape::update() {
+void BoardShape::update() {
 	doTransformation(m_theta, m_scale, m_translate);
 }
 
-bool Shape::in( const sf::Vector2f& p) const {
+bool BoardShape::in( const sf::Vector2f& p) const {
 	return ptInShape(
 		p,
 		m_pt[0].position, m_pt[1].position,
 		m_pt[2].position, m_pt[3].position);
 }
 
-void Shape::doTransformation(
+void BoardShape::doTransformation(
 	float angle, 
 	float scale,
 	const sf::Vector2f& trans) 
@@ -127,10 +127,10 @@ void Shape::doTransformation(
     float cs = std::cos(angle*deg2Rad);
     float sn = std::sin(angle*deg2Rad);
 
-    doRotation(m_pt[0].position, cs, sn, sf::Vector2f(1,1));
+    doRotation(m_pt[0].position, cs, sn, sf::Vector2f(-1,-1));
 	m_cadre[0].position = m_pt[0].position * scadre;
     m_pt[0].position *= scale;
-    doRotation(m_pt[1].position, cs, sn, sf::Vector2f(-1,1));
+    doRotation(m_pt[1].position, cs, sn, sf::Vector2f(1,-1));
 	m_cadre[1].position = m_pt[1].position * scadre;	
     m_pt[1].position *= scale;
 
@@ -150,7 +150,7 @@ void Shape::doTransformation(
 	
 }
 
-void Shape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.texture = m_img;
 	target.draw(m_pt, states);
 
