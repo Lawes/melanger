@@ -156,10 +156,12 @@ class Parallele : public IntervalContainer {
 
 
 class Organizer {
+    public:
+        typedef int idType;
     private:
         typedef Interval::PtrInterval PtrInterval;
         typedef std::list<PtrInterval> ListInterval;
-        typedef std::map<int, PtrInterval> MapInterval;
+        typedef std::map<idType, PtrInterval> MapInterval;
 
         bool m_isRunning;
         ListInterval m_list;
@@ -172,6 +174,7 @@ class Organizer {
         Organizer() : m_isRunning(false) {}
         ~Organizer() { clear(); }
         void add(Interval *interval);
+        void add(idType id, Interval *interval)
     // add avec id, a rappeler de temps en temps ?
     // add sans id (interval temporaire à supprimer directement
         void start();

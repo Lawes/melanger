@@ -140,6 +140,18 @@ void Organizer::add(Interval *interval) {
     m_list.push_back(PtrInterval(interval));
 }
 
+void Organizer::add(Organizer::idType id, Interval *interval) {
+    auto it = m_map.find(id);
+    if( it != m_map.end()) {
+        
+    }
+
+
+
+    m_map.insert
+
+}
+
 void Organizer::update_list(float dt) {
     m_list.remove_if(
         [dt](PtrInterval ptr) {
