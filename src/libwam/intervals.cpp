@@ -135,23 +135,6 @@ void Organizer::start() {
     for(auto &item: m_map) item.second->start();
 }
 
-void Organizer::add(Interval *interval) {
-    if( m_isRunning) interval->start();
-    m_list.push_back(PtrInterval(interval));
-}
-
-void Organizer::add(Organizer::idType id, Interval *interval) {
-    auto it = m_map.find(id);
-    if( it != m_map.end()) {
-        
-    }
-
-
-
-    m_map.insert
-
-}
-
 void Organizer::update_list(float dt) {
     m_list.remove_if(
         [dt](PtrInterval ptr) {

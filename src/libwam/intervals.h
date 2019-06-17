@@ -65,61 +65,6 @@ class IntervalAction : public Interval {
 
 typedef IntervalAction Wait;
 
-class SimpleFunc : public IntervalAction {
-    public:
-        SimpleFunc(Interval::FuncType fun) : IntervalAction(0.0), m_fun(fun) {}
-
-    private:
-        Interval::FuncType m_fun;
-        virtual void _doAction(float p)  { m_fun(); }
-};
-
-
-template< class T>
-class TweenerFunc : public IntervalAction {
-    public:
-        TweenerFunc(T* value, T end, const float time) :
-            IntervalAction(time), value_(value), start(*value), end(end) {}
-        TweenerFunc(T* value,T st, T end, const float time) :
-            IntervalAction(time), value_(value), start(st), end(end) {}
-
-    private:
-        T *value_, start, end;
-    private:
-        virtual void _doAction(float p) { _doTwinnerAction(value_, start, end, p); }
-        virtual void _doTwinnerAction(T* value,T st, T end, float p) = 0;
-};
-
-template< class T>
-class TweenerLin : public TweenerFunc<T> {
-    public:
-        TweenerLin(T* value, T end, const float time) :
-            TweenerFunc<T>(value, end, time) {}
-
-        TweenerLin(T* value,T st, T end, const float time) :
-            TweenerFunc<T>(value, st, end, time) {}
-    private:
-        virtual void _doTwinnerAction(T* value,T st, T end, float p) {
-            *value = ((end-st) * p) + st;
-        }
-};
-
-
-template< class T>
-class TweenerSq : public TweenerFunc<T> {
-    public:
-        TweenerSq(T* value, T end, const float time) :
-            TweenerFunc<T>(value, end, time) {}
-        TweenerSq(T* value,T st, T end, const float time) :
-            TweenerFunc<T>(value, st, end, time) {}
-
-    private:
-        virtual void _doTwinnerAction(T* value,T st, T end, float p) {
-            *value = ((end-st) * p * p) + st;
-        }
-
-};
-
 class IntervalContainer : public Interval {
     protected:
         typedef std::list<PtrInterval> ListeInterval;
@@ -172,11 +117,24 @@ class Organizer {
 
     public:
         Organizer() : m_isRunning(false) {}
-        ~Organizer() { clear(); }
-        void add(Interval *interval);
-        void add(idType id, Interval *interval)
-    // add avec id, a rappeler de temps en temps ?
-    // add sans id (interval temporaire à supprimer directement
+        virtual ~Organizer() { }
+
+        template<class T>
+        T& add(T *interval) {
+            if( m_isRunning) interval->start();
+            m_list.push_back(PtrInterval(interval));
+            return *interval;
+        }
+
+        template<class T>
+        T& add(idType id, T *interval) {
+            auto it = m_map.find(id);
+            if( it != m_map.end())
+                m_map.erase(it);
+            m_map.insert({id, PtrInterval(interval)});
+            return *interval;
+        }
+
         void start();
         void update(float dt);
         void clear();
