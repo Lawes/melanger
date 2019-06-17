@@ -74,9 +74,6 @@ void IntervalContainer::add(Interval *i) {
 }
 
 void IntervalContainer::clear() {
-    //std::cout << "clear IntervalContainer" << std::endl;
-    //for( auto it:m_liste) delete it;
-    //for_each(m_liste.begin(), m_liste.end(), Private::DeleteObject());
     m_liste.clear();
 }
 
@@ -131,7 +128,6 @@ bool Parallele::_update() {
     if( finished) finish();
 
     return finished;
-
 }
 
 void Organizer::start() {
@@ -145,26 +141,24 @@ void Organizer::add(Interval *interval) {
 }
 
 void Organizer::update_list(float dt) {
-    std::list<ListInterval::iterator> listeToRemove;
-
-    for (ListInterval::iterator i = m_list.begin();
-         i != m_list.end(); ++i) {
-        if( (*i)->update(dt) ) {
-            listeToRemove.push_back(i);
+    m_list.remove_if(
+        [dt](PtrInterval ptr) {
+            return ptr->update(dt);
         }
-    }
-
-    for (auto i:listeToRemove)
-        m_list.erase(i);
-    listeToRemove.clear();
+    );
 }
 
 void Organizer::update_map(float dt) {
-    for (auto i = m_map.begin(); i != m_map.end(); ++i) {
-        if( (*i).second->update(dt) ) {
-            i = m_map.erase(i);
-        }
-    }    
+    m_map.erase(
+        remove_if(
+            m_map.begin(),
+            m_map.end(),
+            [dt](PtrInterval ptr) {
+                return ptr->update(dt);
+            }
+        ),
+        m_map.end()
+    ); 
 }
 
 void Organizer::update(float dt) {
