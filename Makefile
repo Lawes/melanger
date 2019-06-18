@@ -35,6 +35,8 @@ OBJ=$(SRC)/main.o \
 	$(SRC)/scene_ext.o \
 	$(SRC)/decorator_ext.o \
 	$(SRC)/boardshape.o \
+	$(SRC)/gamebuffer.o \
+	$(SRC)/gameconfig.o \
 	$(ENGINE_OBJ) \
 	$(LIBWAM_OBJ) \
 	$(GUI_OBJ) \
