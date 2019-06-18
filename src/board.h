@@ -5,52 +5,45 @@
 #include <string>
 #include <list>
 
-#include "tweenId.h"
-#include "shape.h"
+#include <SFML/Graphics.hpp>
+
+#include "gameobject.h"
+#include "tween.h"
+#include "boardshape.h"
 
 
-class Board {
-
+class Board : public GameObject {
     public:
+        enum class SensRotation { Plus, Moins};
         Board();
         virtual ~Board();
 
-        void init(const std::string& fileName, const gui::Box& box);
-        void handle_events(VODZO::CInput &in);
-
-        virtual void update();
-
-        bool finish();
-
-        void draw();
+        void init(const std::string& imgname, const sf::FloatRect& box, int nsx, int nsy);
         void clear();
 
         int getNbMoves() const { return m_nMoves;}
 
+        bool isFinished() const;
+
     protected:
-        std::vector<Shape> listeShape;
-        std::vector<State> states;
-        std::list<int> ordre;
+        std::vector<BoardShape> m_shapes;
+        std::vector<std::size_t> m_ordre;
+        TweenCollection m_actions;
 
-        VODZO::TweenId tween;
-
-        int select1, select2, select;
-
-        bool pressed;
-
-        void lastMove(const int id);
-        void processEchange(const int i1, const int i2);
-        void processRotation(const int i, State::SensRotation sens);
-
-        void configureScreen(int posX, int posY, int w, int h);
-        VODZO::Vector2 getVectorFromPos(const int pos);
+        //void lastMove(int id);
+        //void processEchange(int i1, int i2);
+        //void processRotation(int i, SensRotation sens);
+        sf::Vector2f getVectorFromPos(int pos) const;
 
     private:
+        std::size_t m_nsx, m_nsy;
+        float m_taille;
         int m_nMoves;
-        int m_taille;
-        VODZO::Vector2 m_vectOrig;
+        sf::Vector2f m_origine;
+        sf::Texture m_bgtexture;
 
-        virtual void _init() {};
+    DERIVED_GameObject
+
 };
 
 

@@ -34,6 +34,7 @@ OBJ=$(SRC)/main.o \
 	$(SRC)/globals.o \
 	$(SRC)/scene_ext.o \
 	$(SRC)/decorator_ext.o \
+	$(SRC)/board.o \
 	$(SRC)/boardshape.o \
 	$(SRC)/gamebuffer.o \
 	$(SRC)/gameconfig.o \

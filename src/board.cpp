@@ -1,33 +1,15 @@
 #include <iostream>
-#include <string>
 #include <algorithm>
-#include <SDL/SDL.h>
-#include <SDL/SDL_opengl.h>
-#include "board.h"
-#include "Vector2.h"
-#include "shape.h"
-#include "Ressources.h"
-#include "global.h"
-#include "Random.h"
-#include "state.h"
-#include "Input.h"
-#include "tweenId.h"
-#include "timer.h"
-#include "Box.h"
-#include "sound.h"
 
-#include "texture_utils.h"
+#include "board.h"
+
+#include "globals.h"
 
 using namespace std;
-using namespace VODZO;
-using gui::Box;
 
 Board::Board():
-    tween(),
-    select1(-1),
-    select2(-1),
-    select(-1),
-    pressed(false),
+    m_nsx(1),
+    m_nsy(1),
     m_nMoves(0),
     m_taille(10) 
 {
@@ -36,73 +18,88 @@ Board::Board():
 
 Board::~Board() {
     clear();
-    cout << "clear Board" << endl;
 }
 
-Vector2 Board::getVectorFromPos(const int pos) {
-        int iCol = pos % ImageConfig::nWidth;
-        int iRow = (pos - iCol)/ImageConfig::nWidth;
-        return m_taille*Vector2(iCol, iRow) + m_vectOrig;
-//        return Vector2(iCol * 90 + 45, iRow*90 + 45+50);
+void Board::clear() {
+    m_shapes.clear();
+    m_ordre.clear();
+    m_actions.clear();
 }
 
+sf::Vector2f Board::getVectorFromPos(int pos) const {
+        int iCol = pos % m_nsx;
+        int iRow = (pos - iCol)/m_nsx;
+        return sf::Vector2f(m_taille*iCol, m_taille*iRow) + m_origine;
+}
 
+void Board::start() {
+    m_actions.start();
+}
 
-void Board::init(const string& fileName, const Box& box) {
+void Board::stop() {
+    m_actions.finish();
+}
+
+void Board::update(float dt) {
+    m_actions.update(dt);
+    for(auto &shape: m_shapes)
+        shape.update();
+}
+
+void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int nsy) {
     m_nMoves = 0;
-	select = 0;
+    m_nsx = nsx;
+    m_nsy = nsy;
 
-    unsigned int id = 0;
+    sf::Image *img;
+    RM.get(imgname, img);
+    m_bgtexture.loadFromImage(*img);
+    auto s = img->getSize();
 
-    SDL_Surface *img = LoadIMG(fileName, GL_RGB);
-//    cout << static_cast<unsigned int>(img->format->BitsPerPixel) << endl;
-    SDL_Surface *dest = SDL_CreateRGBSurface(SDL_HWSURFACE, ImageConfig::sizeTexture, ImageConfig::sizeTexture, 24, 0, 0, 0, 0);
-    SDL_Rect clip;
-    clip.w = ImageConfig::sizeTexture;
-    clip.h = ImageConfig::sizeTexture;
-    Shape::setIdCadre(RMa.getIdTexture("cadre"));
+    float textsize = min(
+        static_cast<float>(s.x)/static_cast<float>(m_nsx),
+        static_cast<float>(s.y)/static_cast<float>(m_nsy)
+    );
 
-    m_taille = min(static_cast<float>(box.h)/ImageConfig::nHeight, static_cast<float>(box.w)/ImageConfig::nWidth);
+    float plotsize = min(
+        static_cast<float>(box.width)/static_cast<float>(m_nsx),
+        static_cast<float>(box.height)/static_cast<float>(m_nsy)
+    );
+
+    float totalsize = max(plotsize*m_nsx, plotsize*m_nsy);
 
 
-    m_vectOrig = (Vector2(box.w, box.h) -
-                    m_taille*Vector2(ImageConfig::nWidth, ImageConfig::nHeight))/2
-                    + Vector2(box.x+m_taille/2, box.y+m_taille/2);
-    for(int ih=0; ih< ImageConfig::nHeight; ++ih)
-    for(int iw=0; iw< ImageConfig::nWidth; ++iw) {
-        clip.x = iw*ImageConfig::sizeTexture;
-        clip.y = ih*ImageConfig::sizeTexture;
+    m_origine = sf::Vector2f(
+        box.left + (box.width - totalsize + plotsize)/2,
+        box.top  + (box.height - totalsize + plotsize)/2
+    );
 
-        SDL_BlitSurface(img, &clip, dest, NULL);
-        genGlTexture(id, dest, GL_RGB);
-        listeShape.push_back(Shape(id));
-        states.push_back(State());
+    m_taille = plotsize;
 
-    }
+    m_shapes.clear();
+    m_shapes.resize(nsx*nsy);
+    vector<size_t> indice(m_shapes.size());
 
-    SDL_FreeSurface(img);
-    SDL_FreeSurface(dest);
-
-    vector<int> indice(states.size());
-    for(size_t i=0; i<indice.size(); ++i) {
-        ordre.push_back(static_cast<int>(i));
-        indice[i] = i;
+    size_t id=0;
+    for(int iy=0; iy<nsy; ++iy) {
+        for(int ix=0; ix<nsx; ++ix, ++id) {
+            indice[id] = id;
+            BoardShape& shape = m_shapes[id];
+            shape.setTextcoords(sf::FloatRect(textsize*ix, textsize*iy, textsize, textsize));
+            shape.setTexture(&m_bgtexture, RM.getTexture("cadre"));
+        }
     }
 
     random_shuffle(indice.begin(), indice.end());
 
+    for(size_t i=0; i<m_shapes.size(); ++i)
+        m_shapes[i].init(i, indice[i], 0, getVectorFromPos(indice[i]), 0.4*m_taille);
 
-    for(size_t i=0; i<listeShape.size(); ++i) {
-        states[i].setShape(&listeShape[i]);
-        states[i].init(i, indice[i], Random::Int(-2, 1),
-                        getVectorFromPos(indice[i]), m_taille*(0.5-3./43));
-
-    }
-
-    _init();
+        //states[i].init(i, indice[i], Random::Int(-2, 1),
+        //                getVectorFromPos(indice[i]), m_taille*(0.5-3./43));
 
 }
-
+/*
 int findShape(vector<Shape>& liste, list<int>& ordre, int x, int y) {
     list<int>::const_iterator it = ordre.begin();
     int res = -1;
@@ -113,16 +110,15 @@ int findShape(vector<Shape>& liste, list<int>& ordre, int x, int y) {
     }
 
     return res;
-}
+}*/
 
-bool Board::finish() {
-    for(size_t i=0; i<states.size(); ++i)
-        if( !states[i].good() )
-            return false;
+bool Board::isFinished() const {
+    for(auto &s:m_shapes)
+        if( !s.good() ) return false;
     return true;
-
 }
 
+/* 
 void Board::processEchange(const int i1, const int i2) {
     m_nMoves++;
 
@@ -229,90 +225,9 @@ void Board::handle_events(CInput& in) {
 		in.unKey(SDLK_z);
     }
 }
+*/
 
-void Board::update() {
-
-    tween.Update();
-    for(size_t i=0; i<listeShape.size(); ++i) {
-        if( states[i].good() ) {
-
-            listeShape[i].setColor(Color::green);
-        }
-
-    }
-
-
-
-
-}
-
-void Board::draw() {
-    list<int>::iterator it = ordre.begin();
-
-   for( ; it != ordre.end(); ++it) {
-        listeShape[*it].apply();
-        listeShape[*it].draw();
-   }
-
-}
-
-void Board::clear() {
-    for(size_t i=0; i<listeShape.size(); ++i) {
-        GLuint id = listeShape[i].getIdTexture();
-        glDeleteTextures(1, &id);
-    }
-    listeShape.clear();
-
-}
-
-void Board::lastMove(const int id) {
-    ordre.remove(id);
-    ordre.push_back(id);
-
-}
-
-void BoardSolo::_init() {
-    nextObjectif = -1.0;
-    timeElapsed = 0.0;
-}
-
-
-void BoardSolo::processRandom() {
-    int i1, i2;
-
-    float r = Random::Percent();
-    if( r < 0.5) {
-        i1 = Random::Int(0, listeShape.size());
-        i2 = Random::Int(0, listeShape.size());
-        processEchange(i1, i2);
-    }
-    else {
-        i1 = Random::Int(0, listeShape.size());
-        if( r > 0.75)
-            processRotation(i1, State::ROT_PLUS);
-        else
-            processRotation(i1, State::ROT_MOINS);
-
-    }
-
-}
-
-void BoardSolo::update() {
-    if( nextObjectif < 0 ) {
-        cout << "boardSolo gogo " <<timeElapsed << endl;
-        nextObjectif = 0.1;
-    }
-
-    timeElapsed += deltaTime;
-
-    if( timeElapsed >= nextObjectif ) {
-        nextObjectif = Random::Float(0.1, 1);
-        timeElapsed = 0.0;
-        processRandom();
-        processRandom();
-        processRandom();
-    }
-
-    Board::update();
-
+void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    for(const auto &shape: m_shapes)
+        target.draw(shape, states);
 }

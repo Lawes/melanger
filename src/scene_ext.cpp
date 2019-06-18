@@ -24,6 +24,8 @@ void Exemple::load() {
     RM.get("cadre", cadre);
 
     bg.loadFromImage(*img);
+
+    m_board.init("test", m_context->getBox(), 4, 4);
     
 
     shape.setTexture(&bg, cadre);
@@ -36,25 +38,24 @@ void Exemple::load() {
 
     m_actions.To(0, shape.getTranslate(), sf::Vector2f(400,400), 10);
     m_actions.To(1, shape.getRotate(), 360.0f, 10);
-
 }
 
 void Exemple::_begin() {
     m_actions.start();
-
 }
 
 void Exemple::_end() {
     m_actions.finish();
-
 }
 
 void Exemple::update(float dt) {
     m_actions.update(dt);
     shape.update();
+    m_board.update(dt);
 }
 
 void Exemple::draw(sf::RenderWindow &win) const {
     win.draw(shape);
+    win.draw(m_board);
     //win.draw(m_star);
 }
