@@ -22,12 +22,14 @@ class Board : public GameObject {
         void clear();
 
         int getNbMoves() const { return m_nMoves;}
-
         bool isFinished() const;
+
+    private:
+        void lastMove(std::size_t id);
 
     protected:
         std::vector<BoardShape> m_shapes;
-        std::vector<std::size_t> m_ordre;
+        std::list<std::size_t> m_lastmove;
         TweenCollection m_actions;
 
         //void lastMove(int id);

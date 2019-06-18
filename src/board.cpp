@@ -22,7 +22,7 @@ Board::~Board() {
 
 void Board::clear() {
     m_shapes.clear();
-    m_ordre.clear();
+    m_lastmove.clear();
     m_actions.clear();
 }
 
@@ -78,12 +78,14 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
 
     m_shapes.clear();
     m_shapes.resize(nsx*nsy);
+    m_lastmove.clear();
     vector<size_t> indice(m_shapes.size());
 
     size_t id=0;
     for(int iy=0; iy<nsy; ++iy) {
         for(int ix=0; ix<nsx; ++ix, ++id) {
             indice[id] = id;
+            m_lastmove.push_back(id);
             BoardShape& shape = m_shapes[id];
             shape.setTextcoords(sf::FloatRect(textsize*ix, textsize*iy, textsize, textsize));
             shape.setTexture(&m_bgtexture, RM.getTexture("cadre"));
@@ -111,6 +113,11 @@ int findShape(vector<Shape>& liste, list<int>& ordre, int x, int y) {
 
     return res;
 }*/
+
+void Board::lastMove(size_t id) {
+    m_lastmove.remove(id);
+    m_lastmove.push_back(id);
+}
 
 bool Board::isFinished() const {
     for(auto &s:m_shapes)
@@ -228,6 +235,6 @@ void Board::handle_events(CInput& in) {
 */
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for(const auto &shape: m_shapes)
-        target.draw(shape, states);
+    for(const auto &indice: m_lastmove)
+        target.draw(m_shapes[indice], states);
 }
