@@ -45,15 +45,15 @@ void Exemple::load() {
         [this]{
             auto &in = m_context->getInput();
             auto current = m_board.findshape(in.MouseX(), in.MouseY());
-            if(current >=0) {
-                m_currentSelect = current;
-                m_board.getShape(m_currentSelect).select(true);
-                cout << "select" << endl;
-            }
-            if( m_currentSelect != current) {
-                m_board.getShape(m_currentSelect).select(false);
-                m_currentSelect = current;
+            if( m_currentSelect != current && m_currentSelect>=0) {
+                m_board.getShape(m_currentSelect).overMouse(false);
+                m_currentSelect = -1;
                 cout << "unselect" << endl;
+            }
+            if(current >=0) {
+                m_board.getShape(m_currentSelect).overMouse(true);
+                m_currentSelect = current;
+                cout << "select" << endl;
             }
         },
         []{}
@@ -64,6 +64,7 @@ void Exemple::load() {
         m_fullbox,
         [this]{
             if( m_currentSelect>=0) {
+                m_board.getShape(m_currentSelect).select(true);
                 m_s1 = m_currentSelect;
             }
         }

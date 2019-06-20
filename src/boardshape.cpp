@@ -11,7 +11,7 @@ void doRotation(V& pRot,  float cs, float sn, const V& p) {
 }
 
 BoardShape::BoardShape():
-	m_state{0,0,0, false, false, false},
+	m_state{0,0,0, false, false, false, false},
 	m_pt(sf::Quads, 4),
 	m_cadre(sf::Quads, 4),
 	m_select(sf::LineStrip, 5),
@@ -67,7 +67,7 @@ void BoardShape::rotateMinus() {
 }
 
 void BoardShape::init(int id, int ipos, int irot, const sf::Vector2f& v, float size) {
-	m_state = {id, ipos, irot, false, false, false};
+	m_state = {id, ipos, irot, false, false, false, false};
 
 	setTransform(v, BoardShape::_getRotation(irot), size);
 	update();
@@ -159,6 +159,13 @@ void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	target.draw(m_cadre, states);
 	states.texture = nullptr;
 	if( isSelected() ) {
+		sf::VertexArray vs(m_select);
+		setColorInVA(vs, sf::Color::Green);
+		glEnable(GL_LINE_SMOOTH);
+		glLineWidth(10.0);
+		target.draw(vs, states);
+	}
+	if( isOverMouse()) {
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(3.0);
 		target.draw(m_select, states);

@@ -7,7 +7,7 @@ class BoardShape : public sf::Drawable {
     public:
         struct State {
             int id, ipos, irot;
-            bool isMoving, isRotating, isSeleted;
+            bool isMoving, isRotating, isSeleted, isOvermouse;
         };
 
     private:
@@ -40,6 +40,8 @@ class BoardShape : public sf::Drawable {
 
         void select(bool b) { m_state.isSeleted = b; }
         bool isSelected() const { return m_state.isSeleted;}
+        void overMouse(bool b) { m_state.isOvermouse = b;}
+        bool isOverMouse() const { return m_state.isOvermouse;}
         sf::Vector2f *getTranslate() { return &m_translate; }
         float *getRotate() { return &m_theta; }
 
