@@ -14,7 +14,7 @@ BoardShape::BoardShape():
 	m_state{0,0,0, false, false, false},
 	m_pt(sf::Quads, 4),
 	m_cadre(sf::Quads, 4),
-	m_select(sf::LineStrip, 4),
+	m_select(sf::LineStrip, 5),
 	m_translate(0,0),
 	m_theta(0),
 	m_scale(1.0),
@@ -146,6 +146,7 @@ void BoardShape::doTransformation(
 
 	for(size_t i=0; i<4; ++i)
 		m_select[i].position = m_pt[i].position;
+	m_select[4].position = m_pt[0].position;
 	setColorInVA(m_select, sf::Color::Blue);
 	
 }
@@ -156,7 +157,7 @@ void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 	states.texture = m_bord;
 	target.draw(m_cadre, states);
-
+	states.texture = nullptr;
 	if( isSelected() ) {
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(3.0);

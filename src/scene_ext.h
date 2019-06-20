@@ -17,6 +17,10 @@ class Exemple : public Scene {
         TweenCollection m_actions;
         sf::Texture bg, *cadre;
         BoardShape shape;
+        sf::FloatRect m_fullbox;
+
+    public:
+        int m_currentSelect, m_s1, m_s2;
 
 
     DERIVED_Scene

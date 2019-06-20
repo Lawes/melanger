@@ -23,18 +23,19 @@ class Board : public GameObject {
 
         int getNbMoves() const { return m_nMoves;}
         bool isFinished() const;
+        int findshape(float x, float y) const;
+        BoardShape& getShape(int i);
 
     private:
-        void lastMove(std::size_t id);
+        void lastMove(int id);
+        void processEchange(int i1, int i2);
+        void processRotation(int i, SensRotation sens);
 
     protected:
         std::vector<BoardShape> m_shapes;
-        std::list<std::size_t> m_lastmove;
+        std::list<int> m_lastmove;
         TweenCollection m_actions;
 
-        //void lastMove(int id);
-        //void processEchange(int i1, int i2);
-        //void processRotation(int i, SensRotation sens);
         sf::Vector2f getVectorFromPos(int pos) const;
 
     private:

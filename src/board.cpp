@@ -101,20 +101,21 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
         //                getVectorFromPos(indice[i]), m_taille*(0.5-3./43));
 
 }
-/*
-int findShape(vector<Shape>& liste, list<int>& ordre, int x, int y) {
-    list<int>::const_iterator it = ordre.begin();
-    int res = -1;
-    Vector2 v(x,y);
-    for(; it != ordre.end(); ++it) {
-        if( liste[*it].in(v) )
-            res = *it;
+
+int Board::findshape(float x, float y) const {
+    sf::Vector2f v(x,y);
+    for(auto it = m_lastmove.rbegin(); it !=m_lastmove.rend(); ++it) {
+        if( m_shapes[*it].in(v) )
+            return *it;
     }
+    return -1;
+}
 
-    return res;
-}*/
+BoardShape& Board::getShape(int i) {
+    return m_shapes[i];
+}
 
-void Board::lastMove(size_t id) {
+void Board::lastMove(int id) {
     m_lastmove.remove(id);
     m_lastmove.push_back(id);
 }
@@ -125,114 +126,56 @@ bool Board::isFinished() const {
     return true;
 }
 
-/* 
-void Board::processEchange(const int i1, const int i2) {
+
+void Board::processEchange(int i1, int i2) {
     m_nMoves++;
 
-    int ipos1 = states[i1].getPos();
-    int ipos2 = states[i2].getPos();
-    Vector2 pos1 = getVectorFromPos(ipos1);
-    Vector2 pos2 = getVectorFromPos(ipos2);
+    size_t ipos1 = m_shapes[i1].getState().ipos;
+    size_t ipos2 = m_shapes[i2].getState().ipos;
+    auto vpos1 = getVectorFromPos(ipos1);
+    auto vpos2 = getVectorFromPos(ipos2);
 
-    Functor_v fun1(&states[i1], &State::finDeplacement);
+    m_shapes[i1].moveTo(ipos2);
+    m_actions.To(
+        m_shapes[i1].getState().id,
+        m_shapes[i1].getTranslate(),
+        vpos2,
+        2.0,
+        [this,i1](){m_shapes[i1].endMove();});
 
-    states[i1].goPos(ipos2);
-    tween.To(listeShape[i1].id(Shape::TRANSLATION),
-             listeShape[i1].getTranslate(),
-             pos2,
-             2.0,
-             fun1);
-
-    Functor_v fun2(&states[i2], &State::finDeplacement);
-    states[i2].goPos(ipos1);
-    tween.To(listeShape[i2].id(Shape::TRANSLATION),
-             listeShape[i2].getTranslate(),
-             pos1,
-             2.0,
-             fun2);
+    m_shapes[i2].moveTo(ipos1);
+    m_actions.To(
+        m_shapes[i2].getState().id,
+        m_shapes[i2].getTranslate(),
+        vpos1,
+        2.0,
+        [this,i2](){m_shapes[i2].endMove();});
 
     lastMove(i1);
     lastMove(i2);
-	Mixer::play("s");
+	//Mixer::play("s");
 
 }
 
-void Board::processRotation(const int indice, State::SensRotation sens) {
+void Board::processRotation(int indice, Board::SensRotation sens) {
     m_nMoves++;
 
-    Functor_v fun1(&states[indice], &State::finRotation);
-    states[indice].goRotation(sens);
+    if( sens == Board::SensRotation::Plus)
+        m_shapes[indice].rotatePlus();
+    else
+        m_shapes[indice].rotateMinus();
+
+    m_actions.To(
+        -m_shapes[indice].getState().id,
+        m_shapes[indice].getRotate(),
+        static_cast<float>(m_shapes[indice].getState().irot),
+        1.0,
+        [this,indice](){m_shapes[indice].endRotation();});
+
     lastMove(indice);
-    tween.To(listeShape[indice].id(Shape::ROTATION),
-             listeShape[indice].getRotate(),
-             static_cast<float>(states[indice].getRotation()),
-             1.0,
-             fun1);
-
-	Mixer::play("s");
+	//Mixer::play("s");
 
 }
-
-void Board::handle_events(CInput& in) {
-
-	if( select != select1 && select != -1)
-		listeShape[select].set_select(false);
-
-	select = findShape(listeShape, ordre, in.MouseX(), in.MouseY());
-	if( select != -1) {
-		listeShape[select].set_select(true);
-
-	}
-
-    if( in.MouseButton(SDL_BUTTON_LEFT) ) {
-		if( pressed ) return;
-		pressed = true;
-		if( select == -1)
-			return;
-
-        if( select1 == -1) {
-			select1 = select;
-		}
-        else if( select2 == -1 && select1 == select) {
-			listeShape[select1].set_select(false);
-            select1 = -1;
-
-        }
-        else if( select2 == -1 && select1 != select) {
-            select2 = select;
-            cout << "select (" << select1 << ',' << select2 << ')'<< endl;
-
-            processEchange(select1, select2);
-
-			listeShape[select1].set_select(false);
-			listeShape[select2].set_select(false);
-            select1 = -1;
-            select2 = -1;
-
-        }
-
-    }
-    else {
-        pressed = false;
-    }
-
-
-	if( in.Key(SDLK_a) ) {
-		if( select == -1)
-			return;
-
-		processRotation(select, State::ROT_MOINS);
-		in.unKey(SDLK_a);
-    }
-    if( in.Key(SDLK_z) ) {
-		if( select == -1)
-			return;
-
-		processRotation(select, State::ROT_PLUS);
-		in.unKey(SDLK_z);
-    }
-}
-*/
 
 void Board::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for(const auto &indice: m_lastmove)
