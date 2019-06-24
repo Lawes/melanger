@@ -38,8 +38,8 @@ class BoardShape : public sf::Drawable {
         void moveTo(int newipos );
         void rotatePlus();
         void rotateMinus();
-        bool endMove();
-        bool endRotation();
+        void endMove();
+        void endRotation();
 
         void init(int id, int ipos, int rotation, const sf::Vector2f& v, float size);
 

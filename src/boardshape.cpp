@@ -37,19 +37,17 @@ bool BoardShape::isFixed() const {
 	return !m_state.isMoving && !m_state.isRotating;
 }
 
-bool BoardShape::endMove() {
+void BoardShape::endMove() {
 	m_state.isMoving = false;
 	if( isFixed() ) setColor(sf::Color::Black);
-	return good();
 }
 
-bool BoardShape::endRotation() {
+void BoardShape::endRotation() {
 	m_state.isRotating = false;
 	m_state.irot = m_state.irot%4;
 	m_theta = BoardShape::_getRotation(m_state.irot);
 	//cout << "end rotation " << m_state.irot << ", deg: " << m_theta << endl;
 	if( isFixed() ) setColor(sf::Color::Black);
-	return good();
 }
 
 void BoardShape::moveTo(int pos) {
