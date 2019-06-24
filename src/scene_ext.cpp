@@ -23,6 +23,7 @@ Exemple::Exemple(SceneSwitcher *parent) :
 
 void Exemple::load() {
     m_fullbox = m_context->getBox();
+    m_fullbox.width -= 300;
     sf::Image *img;
     RM.get("test", img);
     RM.get("cadre", cadre);

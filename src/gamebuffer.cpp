@@ -13,8 +13,8 @@ GameBuffer::GameBuffer() :
     initHighScore("assets/scores.txt");
 }
 
-GameConfig::Parameters GameBuffer::getConfig() const {
-    GameConfig::Parameters p;
+GameBuffer::Parameters GameBuffer::getConfig() const {
+    Parameters p;
     m_config.getParameters(m_name, p);
     return p;
 }

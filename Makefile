@@ -32,10 +32,12 @@ ENGINE_OBJ=$(SRCENGINE)/anim.o \
 		   $(SRCENGINE)/mixer.o
 OBJ=$(SRC)/main.o \
 	$(SRC)/globals.o \
+	$(SRC)/game.o \
 	$(SRC)/scene_ext.o \
 	$(SRC)/decorator_ext.o \
 	$(SRC)/board.o \
 	$(SRC)/boardshape.o \
+	$(SRC)/psmeffects.o \
 	$(SRC)/gamebuffer.o \
 	$(SRC)/gameconfig.o \
 	$(ENGINE_OBJ) \

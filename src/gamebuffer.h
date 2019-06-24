@@ -10,6 +10,7 @@
 class GameBuffer {
     public:
         typedef HighScore<float> HS;
+        typedef GameConfig::Parameters Parameters;
     private:
         std::string m_name, m_gameconfigfile, m_highscorefile;
         GameConfig m_config;
@@ -45,7 +46,7 @@ class GameBuffer {
             return m_currentScore;
         }
 
-        GameConfig::Parameters getConfig() const;
+        Parameters getConfig() const;
 };
 
 #endif

@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "libwam/random.h"
+#include "game.h"
 #include "scene_ext.h"
 #include "decorator_ext.h"
 #include "globals.h"
@@ -24,6 +25,7 @@ void loadRessources() {
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<Exemple>("test");
+    app.newScene<Game>("game");
 }
 
 int main()
@@ -52,7 +54,7 @@ int main()
 
     loadScenes(app, fullbox);
 
-    app.switchScene("test");
+    app.switchScene("game");
 
     while (window.isOpen() && !app.wantExit())
     {

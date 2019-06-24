@@ -1,117 +1,133 @@
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp> 
+
+#include "intervals.h"
+#include "psm.h"
+
+
 #include <iostream>
-#include <string>
-#include "Input.h"
-#include "global.h"
+
 #include "game.h"
-#include "board.h"
-#include "glFont.h"
-#include "Color.h"
-#include "popup.h"
-#include "sprite.h"
-#include "transition.h"
+#include "globals.h"
 
-using namespace VODZO;
 using namespace std;
-using gui::Box;
-
-Game::Game(const string& txt) : m_id(txt) {
-    string file;
-    BoardConf.getInfo(txt, file, ImageConfig::nWidth,
-                ImageConfig::nHeight, ImageConfig::sizeTexture);
 
 
-    m_cadre.x = 0;
-    m_cadre.y = 45;
-    m_cadre.w = Windows_width;
-    m_cadre.h = Windows_height-45;
+Game::Game(SceneSwitcher *parent) : 
+    Scene(parent),
+    m_currentSelect(-1),
+    m_s1(-1),
+    m_s2(-1),
+    m_zobs(m_context->getBox())
+{ }
 
-    board.init(file, m_cadre);
+void Game::load() {
+    m_fullbox = m_context->getBox();
+    m_fullbox.width -= 300;
+    sf::Image *img;
+    RM.get("test", img);
+    RM.get("cadre", cadre);
 
-    m_font = RMa.getFont("f");
+    bg.loadFromImage(*img);
 
-    m_help_pu = new HelpPopup(SpritesManager.get(txt), m_cadre);
-    m_help_pu->setDeco(DecoratorManager.get("d4"));
+    m_board.init("test", m_fullbox, 4, 4);
+
+    add_event(
+        sf::Mouse::Button::Left,
+        m_fullbox,
+        [this]{ click(); }
+    );
+    add_event(
+        sf::Keyboard::A,
+        [this]{ 
+            if( m_currentSelect != -1)
+                m_board.processRotation(m_currentSelect, Board::SensRotation::Moins);
+        }
+    );
+    add_event(
+        sf::Keyboard::E,
+        [this]{
+            if( m_currentSelect != -1)
+                m_board.processRotation(m_currentSelect, Board::SensRotation::Plus);
+        }
+    );
+}
+
+void Game::setGame() {
 
 }
 
-Game::~Game() {
-    SoundManager.stop();
-    delete m_help_pu;
+void Game::build_panel() {
+
 }
 
-void Game::_init() {
-    Sequence *seq = new Sequence();
-    Parallele * par = new Parallele();
-    m_x = 0;
-    m_y = 600;
+void Game::click() {
+    if( m_currentSelect<0)
+        return;
 
-    par->add( new TweenerLin<int>(&m_x, 700, 3));
-    par->add( new TweenerLin<int>(&m_y, 0, 3));
-    col = Color(0,0,0,1);
-    par->add( new TweenerLin<Color>(&col, Color(1,1,1,1), 3));
-
-    seq->add( new Wait(4));
-    seq->add( new Func(BindFirst(Functor<string>(this, &Game::setTmp), "coucou")));
-    seq->add( new Wait(4));
-    seq->add( new Func(BindFirst(Functor<string>(this, &Game::setTmp), "ta mère")));
-    seq->add( par);
-    seq->add( new Func(BindFirst(Functor<string>(this, &Game::setTmp), "coucou")));
-
-    intervalsManager.add(seq);
-
-    m_x = 700;
-    m_y = 0;
-    col = Color::white;
-
-    m_chrono.start();
-	SoundManager.launchMusique();
-
-	m_bg.init();
-}
-
-void Game::update() {
-    VODZO::Timer::toStr(m_chrono.top(), m_timeTxt);
-    intervalsManager.update();
-
-    board.update();
-
-    m_bg.update();
-
-    if( board.finish() ) {
-        int res = ScoringSystem.checkScore(m_id, m_chrono.top(), board.getNbMoves());
-        ScoringSystem.addScore(m_id, m_chrono.top(), board.getNbMoves());
-        ResultGame *rg = new ResultGame(m_id, m_cadre);
-        rg->setScore(m_chrono.top(), board.getNbMoves());
-        m_context->addScene(rg);
-        m_context->addScene(new FonduTransition(3.0, m_context) );
-        end();
+    if( m_s1 == m_currentSelect) {
+        if( m_s2 != -1) {
+            m_board.getShape(m_s1).select(false);
+            m_s1 = m_s2;
+            m_s2 = -1;
+        }
+        else {
+            m_board.getShape(m_s1).select(false);
+            m_s1 = -1;
+        }
+    }
+    else if( m_s2 == m_currentSelect) {
+        m_board.getShape(m_s2).select(false);
+        m_s2 = -1;
+    }
+    else if(m_s1 == -1) {
+        m_s1 = m_currentSelect;
+        m_board.getShape(m_currentSelect).select(true);
+    }
+    else if( m_s1 != -1 && m_s2 == -1) {
+        m_s2 = m_currentSelect;
+        //m_board.getShape(m_currentSelect).select(true);
+        m_board.getShape(m_s1).select(false);
+        m_board.processEchange(m_s1, m_s2);
+        m_s1=-1;
+        m_s2=-1;
     }
 }
 
-void Game::draw() {
-    char buffer[5];
-
-    m_bg.draw();
-
-    glColor3d(1,1,1);
-    sprintf(buffer, "Moves : %3d", board.getNbMoves());
-    m_font->print(400,0, buffer);
-    m_font->print(0,0, "time : " + m_timeTxt);
-
-    board.draw();
-
-
-    glColor3fv(&col.r);
-    m_font->print(m_x,m_y, m_tmpStr);
+void Game::_begin() {
+    m_currentSelect = -1;
+    m_s1=-1;
+    m_s2=-1;
+    m_actions.start();
+    m_board.start();
+    m_zobs.start();
 }
 
-void Game::handle_events(VODZO::CInput& in) {
-    if( in.Key(SDLK_h) ) {
-        in.unKey(SDLK_h);
-        m_context->setPopup(m_help_pu);
+void Game::_end() {
+    m_actions.finish();
+    m_board.stop();
+    m_zobs.stop();
+}
 
+void Game::update(float dt) {
+    auto &in = m_context->getInput();
+    auto current = m_board.findshape(in.MouseX(), in.MouseY());
+    if( m_currentSelect != current && m_currentSelect>=0) {
+        m_board.getShape(m_currentSelect).overMouse(false);
+        m_currentSelect = -1;
+    }
+    if(current >=0) {
+        m_board.getShape(current).overMouse(true);
+        m_currentSelect = current;
     }
 
-    board.handle_events(in);
+    m_actions.update(dt);
+    m_board.update(dt);
+    m_zobs.update(dt);
 }
 
+void Game::draw(sf::RenderWindow &win) const {
+    win.draw(m_zobs);
+    win.draw(m_board);
+    //win.draw(m_star);
+}
