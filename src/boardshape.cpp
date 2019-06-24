@@ -112,6 +112,7 @@ void BoardShape::setTransform(const sf::Vector2f& t, float angle, float scale=1.
 
 void BoardShape::update() {
 	doTransformation(m_theta, m_scale, m_translate);
+	if( good()) setColor(sf::Color::Green);
 }
 
 bool BoardShape::in( const sf::Vector2f& p) const {
@@ -162,7 +163,7 @@ void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	if( isSelected() ) {
 		states.texture = nullptr;
 		sf::VertexArray vs(m_select);
-		setColorInVA(vs, sf::Color::Green);
+		setColorInVA(vs, sf::Color::Yellow);
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(10.0);
 		target.draw(vs, states);
