@@ -7,14 +7,14 @@ template< class T>
 class TweenerLin : public IntervalAction {
     public:
         TweenerLin(T* value, T end, const float time) :
-            IntervalAction(time), value_(value), start(*value), end(end) {}
+            IntervalAction(time), value_(value), start_(*value), end_(end) {}
         TweenerLin(T* value,T st, T end, const float time) :
-            IntervalAction(time), value_(value), start(st), end(end) {}
+            IntervalAction(time), value_(value), start_(st), end_(end) {}
 
     private:
-        T *value_, start, end;
+        T *value_, start_, end_;
     private:
-        virtual void _doAction(float p) { *value_ = ((end-start) * p) + start; }
+        virtual void _doAction(float p) { *value_ = ((end_-start_) * p) + start_; }
 };
 
 class TweenCollection : public Organizer {

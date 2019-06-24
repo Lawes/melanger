@@ -22,6 +22,8 @@ class Exemple : public Scene {
     public:
         int m_currentSelect, m_s1, m_s2;
 
+        void click();
+
 
     DERIVED_Scene
 

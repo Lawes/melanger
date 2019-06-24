@@ -22,6 +22,11 @@ class BoardShape : public sf::Drawable {
         }
 
     public:
+
+        float getRotationDeg() const {
+            return _getRotation(m_state.irot);
+        }
+
         BoardShape();
 
         State& getState() {

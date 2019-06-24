@@ -26,10 +26,11 @@ class Board : public GameObject {
         int findshape(float x, float y) const;
         BoardShape& getShape(int i);
 
-    private:
-        void lastMove(int id);
         void processEchange(int i1, int i2);
         void processRotation(int i, SensRotation sens);
+
+    private:
+        void lastMove(int id);
 
     protected:
         std::vector<BoardShape> m_shapes;

@@ -60,8 +60,10 @@ void IntervalAction::_finish() {
 bool IntervalAction::_update() {
     m_timeElapsed += m_dt;
 
-    if (m_timeElapsed >= m_timeLimit)
+    if (m_timeElapsed >= m_timeLimit) {
         finish();
+        return true;
+    }
 
     float p = (m_timeElapsed/m_timeLimit);
     _doAction(p);
@@ -131,13 +133,15 @@ bool Parallele::_update() {
 }
 
 void Organizer::start() {
+    m_isRunning = true;
     for(auto &iptr:m_list) iptr->start();
     for(auto &item: m_map) item.second->start();
 }
 
 void Organizer::finish() {
     for(auto &iptr:m_list) iptr->finish();
-    for(auto &item: m_map) item.second->finish();    
+    for(auto &item: m_map) item.second->finish();
+    m_isRunning = false;
 }
 
 void Organizer::update_list(float dt) {

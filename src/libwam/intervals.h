@@ -128,6 +128,7 @@ class Organizer {
 
         template<class T>
         T& add(idType id, T *interval) {
+            if( m_isRunning) interval->start();
             auto it = m_map.find(id);
             if( it != m_map.end())
                 m_map.erase(it);

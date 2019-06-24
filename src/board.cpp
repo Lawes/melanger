@@ -160,15 +160,17 @@ void Board::processEchange(int i1, int i2) {
 void Board::processRotation(int indice, Board::SensRotation sens) {
     m_nMoves++;
 
-    if( sens == Board::SensRotation::Plus)
+    if( sens == Board::SensRotation::Plus) 
         m_shapes[indice].rotatePlus();
     else
         m_shapes[indice].rotateMinus();
+    
+    //cout << "rotation : " << *(m_shapes[indice].getRotate()) << "-> " << m_shapes[indice].getRotationDeg() << endl;
 
     m_actions.To(
         -m_shapes[indice].getState().id,
         m_shapes[indice].getRotate(),
-        static_cast<float>(m_shapes[indice].getState().irot),
+        m_shapes[indice].getRotationDeg(),
         1.0,
         [this,indice](){m_shapes[indice].endRotation();});
 

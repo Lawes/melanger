@@ -1,8 +1,11 @@
+#include <iostream>
 #include <cmath>
 #include <SFML/OpenGL.hpp>
 
 #include "boardshape.h"
 #include "libwam/geometry.h"
+
+using namespace std;
 
 template<class V>
 void doRotation(V& pRot,  float cs, float sn, const V& p) {
@@ -44,6 +47,7 @@ bool BoardShape::endRotation() {
 	m_state.isRotating = false;
 	m_state.irot = m_state.irot%4;
 	m_theta = BoardShape::_getRotation(m_state.irot);
+	//cout << "end rotation " << m_state.irot << ", deg: " << m_theta << endl;
 	if( isFixed() ) setColor(sf::Color::Black);
 	return good();
 }
@@ -155,17 +159,20 @@ void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 	states.texture = m_img;
 	target.draw(m_pt, states);
 
-	states.texture = m_bord;
-	target.draw(m_cadre, states);
-	states.texture = nullptr;
 	if( isSelected() ) {
+		states.texture = nullptr;
 		sf::VertexArray vs(m_select);
 		setColorInVA(vs, sf::Color::Green);
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(10.0);
 		target.draw(vs, states);
 	}
+
+	states.texture = m_bord;
+	target.draw(m_cadre, states);
+
 	if( isOverMouse()) {
+		states.texture = nullptr;
 		glEnable(GL_LINE_SMOOTH);
 		glLineWidth(3.0);
 		target.draw(m_select, states);
