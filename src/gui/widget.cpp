@@ -75,9 +75,15 @@ void Widget::update() {
 }
 
 void Widget::setText(const sf::String& txt, sf::Font &font, int size, bool force) {
+    setText(txt, font, size, sf::Color::White, force);
+}
+
+
+void Widget::setText(const sf::String& txt, sf::Font& font, int size, sf::Color col, bool force) {
     m_text.setFont(font);
     m_text.setString(txt);
     m_text.setCharacterSize(size);
+    m_text.setFillColor(col);
     m_drawText = !txt.isEmpty();
     if( force || !m_fixedsize) {
         Widget::Box b(m_text.getLocalBounds());

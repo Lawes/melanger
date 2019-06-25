@@ -1,5 +1,6 @@
 #include "timeit.h"
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -31,20 +32,17 @@ void Timeit::display(ostream &fout) const {
         fout << "#" << it.second.count << endl;
         fout << "\tmean  " << mean << " ms" << endl;
     }
-
 }
 
 std::string Timeit::to_string(double t) {
     char buffer[6];
-    int secondes, minutes;
-
-    secondes = static_cast<int>(t)%60;
-    minutes = static_cast<int>(t - secondes)/60;
+    int secondes = static_cast<int>(t)%60,
+        minutes = static_cast<int>(t - secondes)/60;
 
     if( minutes > 0)
-        sprintf(buffer, "%2d:%02d", minutes, secondes );
+        snprintf(buffer, 6, "%2d:%02d", minutes, secondes );
     else
-        sprintf(buffer, "%5d", secondes );
+        snprintf(buffer, 6, "%5d", secondes );
 
     return std::string(buffer);
 }

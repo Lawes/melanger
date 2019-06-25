@@ -43,30 +43,25 @@ std::string trim_copy(std::string s) {
     return s;
 }
 
-
 template<>
-double from_string( const std::string & Str)
-{
-	return atof(Str.c_str());
+double from_string( const std::string& Str) {
+	return std::stod(Str);
 }
 
 template<>
-float from_string( const std::string & Str)
-{
-	return static_cast<float>(atof(Str.c_str()));
+float from_string( const std::string & Str) {
+	return std::stof(Str);
+}
+
+template<>
+int from_string( const std::string & Str) {
+	return std::stoi(Str);
 }
 
 template<>
 std::string from_string(const string & Str) {
 	return Str;
 }
-
-template<>
-std::string to_string( const string & Value )
-{
-	return Value;
-}
-
 
 template<>
 bool itemize(const std::string& txt, float& t, float& u) {

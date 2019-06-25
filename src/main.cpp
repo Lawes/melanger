@@ -19,6 +19,8 @@ void loadRessources() {
     RM.addTexture("fire1", "assets/sprites/fire1.png");
     RM.addTexture("fire2", "assets/sprites/fire2.png");
     RM.addTexture("cadre", "assets/sprites/cadre_board.png");
+    RM.addTexture("txtbg", "assets/sprites/bg_txt.png");
+    RM.addTexture("underline", "assets/sprites/underline.png");
 
     RM.addFont("font", "assets/fonts/LiberationMono-Regular.ttf");
 }

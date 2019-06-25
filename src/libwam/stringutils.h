@@ -26,9 +26,8 @@ std::string string_format( const std::string& format, Args ... args )
     return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
 }
 
-
 template<class T>
-T from_string( const std::string & Str)
+T from_string( const std::string& Str)
 {
 	T Dest;
     std::istringstream iss( Str );
@@ -36,25 +35,28 @@ T from_string( const std::string & Str)
 	return Dest;
 }
 
+/* 
 template<typename T>
 std::string to_string( const T & Value )
 {
     std::ostringstream oss;
     oss << Value;
     return oss.str();
-}
+}*/
 
 template<>
-double from_string( const std::string & Str);
+double from_string( const std::string& Str);
 
 template<>
 float from_string( const std::string & Str);
 
 template<>
-std::string from_string(const std::string & Str);
+int from_string( const std::string & Str);
 
 template<>
-std::string to_string( const std::string & Value );
+std::string from_string(const std::string & Str);
+
+
 
 template<class T, class IteratorOut>
 IteratorOut itemize(const std::string& txt, IteratorOut itemIt, const char delim = ' ') {

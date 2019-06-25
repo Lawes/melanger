@@ -62,6 +62,7 @@ namespace gui {
             }
 
             void setText(const sf::String& txt, sf::Font& font, int size, bool force=false);
+            void setText(const sf::String& txt, sf::Font& font, int size, sf::Color col, bool force=false);
 
             virtual void move(float x, float y);
             virtual void set_pos(float x, float y);

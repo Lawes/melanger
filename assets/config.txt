@@ -10,25 +10,25 @@ width=10
 height=7
 size=64
 
-@crépuscule
+@crepuscule
 file=data/DSCN1317.bmp
 width=4
 height=3
 size=256
 
-@Fonzy
+@fonzy
 file=data/gnougnoun.bmp
 width=4
 height=3
 size=256
 
-@GrandeCasse
+@grandecasse
 file=data/grdCasse.bmp
 width=4
 height=3
 size=256
 
-@PourLaHorde
+@pourlahorde
 file=data/thrall.bmp
 width=5
 height=4
@@ -39,4 +39,3 @@ file=data/tryit.bmp
 width=2
 height=2
 size=256
-

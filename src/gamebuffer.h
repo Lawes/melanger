@@ -14,7 +14,7 @@ class GameBuffer {
     private:
         std::string m_name, m_gameconfigfile, m_highscorefile;
         GameConfig m_config;
-        HighScore<float> m_highscore;
+        HS m_highscore;
 
         HS::Score m_currentScore;
 
@@ -22,6 +22,10 @@ class GameBuffer {
         GameBuffer();
 
         void beginRun(const std::string& name);
+
+        std::string getGameName() const {
+            return m_name;
+        }
 
         void initConfig(const std::string& file) {
             m_gameconfigfile = file;

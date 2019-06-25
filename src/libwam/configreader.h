@@ -37,7 +37,7 @@ class ConfigReader {
                 it = me.insert(std::make_pair(clef, Entries())).first;
             }
 
-            it->second.push_back(to_string(value));
+            it->second.push_back(std::to_string(value));
         }
 
         template<class Container>
