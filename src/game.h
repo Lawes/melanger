@@ -7,6 +7,7 @@
 #include "psmeffects.h"
 #include "gui/widget.h"
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class Game : public Scene {
     public:
@@ -14,25 +15,30 @@ class Game : public Scene {
         virtual ~Game() {}
 
     private:
+        static int _getScore(float t, int nmoves);
+
         void setGame();
         void build_panel();
+        void notifyVictoire();
+        void notifyDefaite();
+
+        void panel_endgame(const std::wstring& txt, int totalScore, float time, int nmoves);
 
     private:
+        float m_time_elapsed;
         Board m_board;
         TweenCollection m_actions;
         sf::Texture bg, *cadre;
         sf::FloatRect m_fullbox;
         ZoneObscure m_zobs;
-        gui::VPanel m_panel;
+        gui::VPanel m_panel, m_panel_hintquit, m_panel_endgame;;
 
     public:
         int m_currentSelect, m_s1, m_s2;
 
         void click();
 
-
     DERIVED_Scene
-
 };
 
 #endif
