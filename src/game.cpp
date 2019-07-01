@@ -8,7 +8,7 @@
 #include "libwam/timeit.h"
 
 #include <iostream>
-
+#include "globals.h"
 #include "game.h"
 #include "globals.h"
 
@@ -17,6 +17,7 @@ using namespace std;
 
 Game::Game(SceneSwitcher *parent) : 
     Scene(parent),
+    m_ispaused(false),
     m_time_elapsed(0),
     m_currentSelect(-1),
     m_s1(-1),
@@ -25,7 +26,7 @@ Game::Game(SceneSwitcher *parent) :
 { }
 
 int Game::_getScore(float t, int nmoves) {
-    return static_cast<int>(t*10.0f) + nmoves*5;
+    return static_cast<int>(t*10.0f) + nmoves*2;
 }
 
 void Game::load() {
@@ -80,6 +81,9 @@ void Game::load() {
     m_panel_hintquit.juxtaposeHorizontal(m_fullbox, gui::HALIGN_RIGHT,0);
 
     m_panel_hintquit.update();
+
+    DECOM.apply("lightbg", m_panel_endgame);
+    m_panel_endgame.unVisible();
 }
 
 void Game::setGame() {
@@ -161,16 +165,24 @@ void Game::_begin() {
     m_actions.start();
     m_board.start();
     m_zobs.start();
+    resume();
 }
 
 void Game::_end() {
     m_actions.finish();
     m_board.stop();
     m_zobs.stop();
+    pause();
 }
 
 void Game::update(float dt) {
     m_time_elapsed += dt;
+    m_zobs.update(dt);
+    m_actions.update(dt);
+
+    if( isPaused() )
+        return;
+
     auto &in = m_context->getInput();
     auto current = m_board.findshape(in.MouseX(), in.MouseY());
     if( m_currentSelect != current && m_currentSelect>=0) {
@@ -182,43 +194,36 @@ void Game::update(float dt) {
         m_currentSelect = current;
     }
 
-    m_actions.update(dt);
     m_board.update(dt);
-    m_zobs.update(dt);
+
 
     build_panel();
-}
 
-void Game::launchEndGame(bool victory) {
-    m_orgaIntervals.clear();
-    if( victory ) {
-        m_orgaIntervals.add( new SimpleFunc([this]{notifyVictoire();}));
-    }
-    else
-        m_orgaIntervals.add( new SimpleFunc([this]{notifyDefaite();}) );
+    if( m_board.isFinished() ) {
+        m_actions.clear();
 
-    m_orgaIntervals.add(new Wait(3.0));
-    m_orgaIntervals.add(new SimpleFunc([this, victory]{exitOrContinue(victory);}));
-    m_orgaIntervals.start();
-    pause();
-        
-    endShow();
-    if( victory) {
-        if( !GB.goNextGame(m_score, m_lifePlayer) ) {
-            cout << "gogo next game"<< endl;
-            begin();
-            return;
-        }
+        m_actions.add( new IntervalAction(
+            [this]{
+                pause();
+                notifyVictoire();
+            }, 
+            7.0f,
+            [this]{
+                cout << "end score" << endl;
+                m_panel_endgame.setVisible(false);
+                m_context->switchScene(scene::ScoreGame);
+            }
+        ));
+        m_actions.start();
     }
-    GB.saveScore(m_score);
-    forceGameOver();
-    m_context->switchScene(scene::ScoreGame);    
 }
 
 void Game::notifyVictoire() {
     //MIXER.play("bravo");
     auto nmoves=m_board.getNbMoves();
     int score = _getScore(m_time_elapsed, nmoves);
+    GB.saveScore(score);
+    cout << "show end score" << endl;
     panel_endgame(L"Victoire !", score, m_time_elapsed, nmoves);
 }
 
@@ -227,14 +232,13 @@ void Game::notifyDefaite() {
 }
 
 
-void Game::panel_endgame(const wstring& txt, int totalScore, float time, int nmoves) {
+void Game::panel_endgame(const wstring& txt, int totalScore, int time, int nmoves) {
     m_panel_endgame.release();
 
     gui::Widget *w = new gui::Widget();
     sf::Font *f;
     RM.get("font", f);
-    w->setText(txt, *f, 50);
-    w->getText().setFillColor(sf::Color(227,69,69));
+    w->setText(txt, *f, 50, sf::Color(227,69,69));
     m_panel_endgame.add_child(w);
 
     gui::VPanel *vp = new gui::VPanel();
@@ -247,8 +251,7 @@ void Game::panel_endgame(const wstring& txt, int totalScore, float time, int nmo
     hp->add_child(w);
 
     w = new gui::Widget();
-    w->setText("+ " + to_string(time), *f, 35);
-    w->getText().setFillColor(sf::Color(255,0,255));
+    w->setText("+ " + to_string(time), *f, 35, sf::Color(255,0,255));
     hp->add_child(w);
     vp->add_child(hp);
 
@@ -258,8 +261,7 @@ void Game::panel_endgame(const wstring& txt, int totalScore, float time, int nmo
     hp->add_child(w);
 
     w = new gui::Widget();
-    w->setText("+ " + to_string(nmoves), *f, 35);
-    w->getText().setFillColor(sf::Color(255,0,255));        
+    w->setText("+ " + to_string(nmoves), *f, 35, sf::Color(255,0,255));      
     hp->add_child(w);
     vp->add_child(hp);
 
@@ -269,8 +271,7 @@ void Game::panel_endgame(const wstring& txt, int totalScore, float time, int nmo
     hp->add_child(w);
 
     w = new gui::Widget();
-    w->setText( to_string(totalScore), *f, 35);
-    w->getText().setFillColor(sf::Color(255,0,255));        
+    w->setText( to_string(totalScore), *f, 35, sf::Color(255,0,255));   
     hp->add_child(w);
     vp->add_child(hp);
 

@@ -22,9 +22,14 @@ class Game : public Scene {
         void notifyVictoire();
         void notifyDefaite();
 
-        void panel_endgame(const std::wstring& txt, int totalScore, float time, int nmoves);
+        void panel_endgame(const std::wstring& txt, int totalScore, int time, int nmoves);
+
+        void pause() { m_ispaused=true;}
+        bool isPaused() const { return m_ispaused;}
+        void resume() { m_ispaused=false;}
 
     private:
+        bool m_ispaused;
         float m_time_elapsed;
         Board m_board;
         TweenCollection m_actions;

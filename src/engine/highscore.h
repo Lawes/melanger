@@ -62,13 +62,17 @@ class HighScore {
                 it->second.push_back(v);
         }
 
-        LvlScore getScore(const std::string& lvlname, std::size_t maxval) const {
+        LvlScore getScore(const std::string& lvlname, std::size_t maxval, bool reverse=false) const {
             auto it = m_allScores.find(lvlname);
             if( it == m_allScores.end())
                 return HighScore::LvlScore();
             
             HighScore::LvlScore res(it->second);
-            std::sort(res.begin(), res.end(), std::greater<Score>());
+            if( reverse)
+                std::sort(res.begin(), res.end(), std::less<Score>());
+            else
+                std::sort(res.begin(), res.end(), std::greater<Score>());
+            
             if( maxval > 0)
                 res.resize(std::min(maxval, res.size()));
             return res;

@@ -47,6 +47,27 @@ IntervalAction::IntervalAction(Interval::FuncType f) :
     m_timeLimit(-1.0)
 { }
 
+IntervalAction::IntervalAction(float t, Interval::FuncType f) :
+    m_execStart([]{}),
+    m_execFinish(f),
+    m_timeElapsed(0.0),
+    m_timeLimit(t)
+{ }
+
+IntervalAction::IntervalAction(Interval::FuncType f, float t) :
+    m_execStart(f),
+    m_execFinish([]{}),
+    m_timeElapsed(0.0),
+    m_timeLimit(t)
+{ }
+
+IntervalAction::IntervalAction(Interval::FuncType fb, float t, Interval::FuncType fe) :
+    m_execStart(fb),
+    m_execFinish(fe),
+    m_timeElapsed(0.0),
+    m_timeLimit(t)
+{ }
+
 void IntervalAction::_start() {
     m_execStart();
     m_timeElapsed = 0.0;

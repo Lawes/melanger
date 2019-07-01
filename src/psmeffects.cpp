@@ -117,7 +117,7 @@ FeuxArtifice::FeuxArtifice(sf::FloatRect rec) :
     m_fuse.getRender().setTexture(*RM.getTexture("fuse"));
 
     m_fuse.getEmitter().setVit(PSM::Vector(0, -250));
-    m_fuse.getEmitter().setPos(PSM::Vector(275, 700));
+    m_fuse.getEmitter().setPos(PSM::Vector(rec.left+rec.width/2, rec.top+rec.height));
 }
 
 void FeuxArtifice::paf(PSM::Vector v) {

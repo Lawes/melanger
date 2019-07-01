@@ -47,6 +47,9 @@ class IntervalAction : public Interval {
     public:
         IntervalAction(float t);
         IntervalAction(FuncType f);
+        IntervalAction(float t, FuncType f);
+        IntervalAction(FuncType f, float t);
+        IntervalAction(FuncType fb, float t, FuncType fe);
 
         void setStartFunc(FuncType f) {
             m_execStart = f;
@@ -121,14 +124,12 @@ class Organizer {
 
         template<class T>
         T& add(T *interval) {
-            if( m_isRunning) interval->start();
             m_list.push_back(PtrInterval(interval));
             return *interval;
         }
 
         template<class T>
         T& add(idType id, T *interval) {
-            if( m_isRunning) interval->start();
             auto it = m_map.find(id);
             if( it != m_map.end())
                 m_map.erase(it);

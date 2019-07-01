@@ -9,7 +9,7 @@
 
 class GameBuffer {
     public:
-        typedef HighScore<float> HS;
+        typedef HighScore<int> HS;
         typedef GameConfig::Parameters Parameters;
     private:
         std::string m_name, m_gameconfigfile, m_highscorefile;

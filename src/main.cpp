@@ -21,13 +21,18 @@ void loadRessources() {
     RM.addTexture("cadre", "assets/sprites/cadre_board.png");
     RM.addTexture("txtbg", "assets/sprites/bg_txt.png");
     RM.addTexture("underline", "assets/sprites/underline.png");
-
+    RM.addTexture("sun", "assets/sprites/sun1.png");
+    RM.addTexture("star", "assets/sprites/star.png");
+    RM.addTexture("fuse", "assets/sprites/particule.png");
+    
     RM.addFont("font", "assets/fonts/LiberationMono-Regular.ttf");
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<Exemple>("test");
-    app.newScene<Game>("game");
+    app.newScene<Game>(scene::LaunchGame);
+    app.newScene<ExitScreen>(scene::GlobalExit);
+    app.newScene<EndGameScreen>(scene::ScoreGame);
 }
 
 int main()
@@ -56,7 +61,7 @@ int main()
 
     loadScenes(app, fullbox);
 
-    app.switchScene("game");
+    app.switchScene(scene::LaunchGame);
 
     while (window.isOpen() && !app.wantExit())
     {
