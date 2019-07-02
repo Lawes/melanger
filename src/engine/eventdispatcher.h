@@ -79,9 +79,14 @@ class EventDispatcher {
         typedef std::unique_ptr<gEvent> PtrEvent;
         typedef std::list< PtrEvent > ListEvents;
         ListEvents m_listeEvents;
+        bool m_check_events;
 
     public:
+        EventDispatcher() : m_check_events(true) {}
         virtual ~EventDispatcher() { clearEvents(); }
+
+        void enable_check_events() { m_check_events=true;}
+        void disable_check_events() { m_check_events=false;}
 
         void add_event(sf::Keyboard::Key key, gEvent::EventFunc ftrue);
         void add_event(sf::Keyboard::Key key, sf::FloatRect& box, gEvent::EventFunc ftrue);

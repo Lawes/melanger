@@ -18,6 +18,7 @@ using namespace std;
 Game::Game(SceneSwitcher *parent) : 
     Scene(parent),
     m_ispaused(false),
+    m_hint(false),
     m_time_elapsed(0),
     m_currentSelect(-1),
     m_s1(-1),
@@ -32,13 +33,8 @@ int Game::_getScore(float t, int nmoves) {
 void Game::load() {
     m_fullbox = m_context->getBox();
     m_fullbox.width -= 300;
-    sf::Image *img;
-    RM.get("test", img);
+
     RM.get("cadre", cadre);
-
-    bg.loadFromImage(*img);
-
-    m_board.init("test", m_fullbox, 4, 4);
 
     add_event(
         sf::Mouse::Button::Left,
@@ -87,7 +83,11 @@ void Game::load() {
 }
 
 void Game::setGame() {
+    sf::Image *img;
+    RM.get("test", img);
+    m_bg.loadFromImage(*img);
 
+    m_board.init("test", m_fullbox, 4, 4);
 }
 
 void Game::build_panel() {
@@ -124,6 +124,10 @@ void Game::build_panel() {
     m_panel.update();
 }
 
+void Game::launch_hint() {
+
+}
+
 void Game::click() {
     if( m_currentSelect<0)
         return;
@@ -158,6 +162,8 @@ void Game::click() {
 }
 
 void Game::_begin() {
+    setGame();
+
     m_time_elapsed = 0.0;
     m_currentSelect = -1;
     m_s1=-1;
@@ -166,6 +172,12 @@ void Game::_begin() {
     m_board.start();
     m_zobs.start();
     resume();
+
+    auto s = m_bg.getSize();
+    m_hintshape.setOrigin(s.x/2, s.y/2);
+    m_hintshape.setPosition(
+        m_fullbox.left + m_fullbox.width/2,
+        m_fullbox.top + m_fullbox.height/2);
 }
 
 void Game::_end() {

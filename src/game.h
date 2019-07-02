@@ -28,15 +28,18 @@ class Game : public Scene {
         bool isPaused() const { return m_ispaused;}
         void resume() { m_ispaused=false;}
 
+        void launch_hint();
+
     private:
-        bool m_ispaused;
+        bool m_ispaused, m_hint;
         float m_time_elapsed;
         Board m_board;
         TweenCollection m_actions;
-        sf::Texture bg, *cadre;
+        sf::Texture m_bg, *cadre;
         sf::FloatRect m_fullbox;
         ZoneObscure m_zobs;
-        gui::VPanel m_panel, m_panel_hintquit, m_panel_endgame;;
+        gui::VPanel m_panel, m_panel_hintquit, m_panel_endgame;
+        sf::RectangleShape m_hintshape;
 
     public:
         int m_currentSelect, m_s1, m_s2;

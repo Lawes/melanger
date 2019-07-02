@@ -42,6 +42,9 @@ void EventDispatcher::add_event(sf::FloatRect& box, gEvent::EventFunc ftrue, gEv
 }
 
 void EventDispatcher::check_events(CInput& in) {
+    if(!m_check_events)
+        return;
+
     for(auto &e: m_listeEvents)
         e->check(in);
 }
