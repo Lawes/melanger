@@ -63,6 +63,17 @@ void Game::load() {
     DECOM.apply("txtbg", *w);
     DECOM.apply("underline", *w);
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+    add_event(
+        sf::Mouse::Left,
+        w->getBox(),
+        [this]{
+            if( !m_hintshape.isSelected())
+                launch_hint(true);
+            else
+                launch_hint(false);
+            
+        }
+    );
     m_panel_hintquit.set_espace(100);
     m_panel_hintquit.add_child(w);
 
@@ -88,6 +99,30 @@ void Game::setGame() {
     m_bg.loadFromImage(*img);
 
     m_board.init("test", m_fullbox, 4, 4);
+
+    sf::Vector2f v(m_fullbox.left+m_fullbox.width/2, m_fullbox.top+m_fullbox.height/2);
+    m_hintshape.setTransform(v, 0, 0);
+    auto s = m_bg.getSize();
+    m_hintshape.setTexture(&m_bg, cadre);
+    m_hintshape.setTextcoords(sf::FloatRect(0,0,s.x, s.y));
+    m_hintshape.select(false);
+
+}
+
+void Game::launch_hint(bool open) {
+    m_hintshape.select(true);
+
+    auto *s = new Sequence();
+    if( open) {
+        s->add( new TweenerLin<float>(m_hintshape.getScale(), 0.0f, 250.0f, 1.0f) );
+        s->add( new IntervalAction(5.0f, []{cout << "coucou hint" << endl;}) );
+    }
+    else{
+        s->add( new TweenerLin<float>(m_hintshape.getScale(), 0.0f, 1.0f) );
+        s->add( new IntervalAction([this]{m_hintshape.select(false);}) );
+    }
+    m_actions.add(0, s);
+    s->start();
 }
 
 void Game::build_panel() {
@@ -124,9 +159,7 @@ void Game::build_panel() {
     m_panel.update();
 }
 
-void Game::launch_hint() {
 
-}
 
 void Game::click() {
     if( m_currentSelect<0)
@@ -172,12 +205,6 @@ void Game::_begin() {
     m_board.start();
     m_zobs.start();
     resume();
-
-    auto s = m_bg.getSize();
-    m_hintshape.setOrigin(s.x/2, s.y/2);
-    m_hintshape.setPosition(
-        m_fullbox.left + m_fullbox.width/2,
-        m_fullbox.top + m_fullbox.height/2);
 }
 
 void Game::_end() {
@@ -190,6 +217,8 @@ void Game::_end() {
 void Game::update(float dt) {
     m_time_elapsed += dt;
     m_zobs.update(dt);
+    m_hintshape.update();
+
     m_actions.update(dt);
 
     if( isPaused() )
@@ -301,5 +330,8 @@ void Game::draw(sf::RenderWindow &win) const {
     win.draw(m_panel);
     win.draw(m_panel_hintquit);
     win.draw(m_panel_endgame);
+
+    if( m_hintshape.isSelected())
+        win.draw(m_hintshape);
     //win.draw(m_star);
 }

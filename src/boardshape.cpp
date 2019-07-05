@@ -28,7 +28,7 @@ BoardShape::BoardShape():
 }
 
 bool BoardShape::good() const {
-	return m_state.ipos == m_state.id
+	return m_state.ipos+1 == m_state.id
 		&& m_state.irot == 0
 		&& isFixed();
 }

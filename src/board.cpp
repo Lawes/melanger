@@ -95,10 +95,7 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
     random_shuffle(indice.begin(), indice.end());
 
     for(size_t i=0; i<m_shapes.size(); ++i)
-        m_shapes[i].init(i, indice[i], 0, getVectorFromPos(indice[i]), 0.4*m_taille);
-
-        //states[i].init(i, indice[i], Random::Int(-2, 1),
-        //                getVectorFromPos(indice[i]), m_taille*(0.5-3./43));
+        m_shapes[i].init(i+1, indice[i], 0, getVectorFromPos(indice[i]), 0.4*m_taille);
 
 }
 

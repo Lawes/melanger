@@ -49,6 +49,7 @@ class BoardShape : public sf::Drawable {
         bool isOverMouse() const { return m_state.isOvermouse;}
         sf::Vector2f *getTranslate() { return &m_translate; }
         float *getRotate() { return &m_theta; }
+        float *getScale() { return &m_scale; }
 
         void setTexture(sf::Texture *img, sf::Texture *bord);
         void setTextcoords(const sf::FloatRect& rect);
