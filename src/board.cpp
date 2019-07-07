@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "board.h"
+#include "libwam/random.h"
 
 #include "globals.h"
 
@@ -173,6 +174,33 @@ void Board::processRotation(int indice, Board::SensRotation sens) {
 
     lastMove(indice);
 	//Mixer::play("s");
+}
+
+void Board::processRandomMove() {
+    vector<int> v;
+    for(auto &s:m_shapes) {
+        if(!s.good() && s.isFixed())
+            v.push_back(s.getState().id);
+    }
+
+    random_shuffle(v.begin(), v.end());
+    if( Random::Percent() > 0.5) {
+        if( v.size() < 2)
+            return;
+
+        int ipos1 = v[0]-1,
+            ipos2 = v[1]-1;
+        processEchange(ipos1, ipos2);
+    }
+    else {
+        if(v.size() > 0) {
+            int ipos = v[0]-1;
+            if( Random::Percent() > 0.5)
+                processRotation(ipos, Board::SensRotation::Plus);
+            else
+                processRotation(ipos, Board::SensRotation::Moins);
+        }
+    }
 
 }
 

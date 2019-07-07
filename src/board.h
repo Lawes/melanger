@@ -31,6 +31,7 @@ class Board : public GameObject {
 
     private:
         void lastMove(int id);
+        void processRandomMove();
 
     protected:
         std::vector<BoardShape> m_shapes;
