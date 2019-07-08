@@ -53,19 +53,19 @@ void BoardShape::endRotation() {
 void BoardShape::moveTo(int pos) {
 	m_state.ipos = pos;
 	m_state.isMoving = true;
-	setColor(sf::Color::Red);
+	setColor(sf::Color(200,0,0,100));
 }
 
 void BoardShape::rotatePlus() {
 	m_state.irot += 1;
 	m_state.isRotating = true;
-	setColor(sf::Color::Red);
+	setColor(sf::Color(200,0,0,100));
 }
 
 void BoardShape::rotateMinus() {
 	m_state.irot -= 1;
 	m_state.isRotating = true;
-	setColor(sf::Color::Red);
+	setColor(sf::Color(200,0,0,100));
 }
 
 void BoardShape::init(int id, int ipos, int irot, const sf::Vector2f& v, float size) {
@@ -110,7 +110,7 @@ void BoardShape::setTransform(const sf::Vector2f& t, float angle, float scale=1.
 
 void BoardShape::update() {
 	doTransformation(m_theta, m_scale, m_translate);
-	if( good()) setColor(sf::Color::Green);
+	if( good()) setColor(sf::Color(0,200,0,100));
 }
 
 bool BoardShape::in( const sf::Vector2f& p) const {

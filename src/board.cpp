@@ -67,12 +67,9 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
         static_cast<float>(box.height)/static_cast<float>(m_nsy)
     );
 
-    float totalsize = max(plotsize*m_nsx, plotsize*m_nsy);
-
-
     m_origine = sf::Vector2f(
-        box.left + (box.width - totalsize + plotsize)/2,
-        box.top  + (box.height - totalsize + plotsize)/2
+        box.left + (box.width - plotsize*m_nsx + plotsize)/2,
+        box.top  + (box.height - plotsize*m_nsy + plotsize)/2
     );
 
     m_taille = plotsize;

@@ -84,6 +84,13 @@ void Game::load() {
     DECOM.apply("txtbg", *w);
     DECOM.apply("underline", *w);
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+    add_event(
+        sf::Mouse::Left,
+        w->getBox(),
+        [this]{
+            m_context->switchScene(scene::GlobalPresentation);
+        }
+    );    
     m_panel_hintquit.add_child(w, gui::HALIGN_LEFT);
 
     m_panel_hintquit.set_pos(0, m_fullbox.top+m_fullbox.height/2);

@@ -1,41 +1,47 @@
 @test
-file=data/test.bmp
+file=assets/sprites/test.png
 width=4
 height=4
 size=128
 
 @fractal
-file=data/logo.bmp
+file=assets/sprites/logo.png
 width=10
 height=7
 size=64
 
 @crepuscule
-file=data/DSCN1317.bmp
+file=assets/sprites/DSCN1317.png
 width=4
 height=3
 size=256
 
 @fonzy
-file=data/gnougnoun.bmp
+file=assets/sprites/gnougnoun.png
 width=4
 height=3
 size=256
 
 @grandecasse
-file=data/grdCasse.bmp
+file=assets/sprites/grdCasse.png
 width=4
 height=3
 size=256
 
 @pourlahorde
-file=data/thrall.bmp
+file=assets/sprites/thrall.png
 width=5
 height=4
 size=256
 
 @_tryit
-file=data/tryit.bmp
+file=assets/sprites/tryit.png
 width=2
+height=2
+size=256
+
+@_randomit
+file=assets/sprites/randomit.png
+width=3
 height=2
 size=256

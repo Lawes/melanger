@@ -26,10 +26,17 @@ void loadRessources() {
     RM.addTexture("fuse", "assets/sprites/particule.png");
     
     RM.addFont("font", "assets/fonts/LiberationMono-Regular.ttf");
+
+
+    const auto& globalcfg= GB.getGlobalConfig();
+    for( const auto& name: globalcfg.getSections()) {
+        RM.addImage(name, GB.getConfig(name).imgfile);
+    }
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<Exemple>("test");
+    app.newScene<PresentationScene>(scene::GlobalPresentation);
     app.newScene<Game>(scene::LaunchGame);
     app.newScene<ExitScreen>(scene::GlobalExit);
     app.newScene<EndGameScreen>(scene::ScoreGame);

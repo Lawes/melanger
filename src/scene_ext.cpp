@@ -4,6 +4,7 @@
 
 #include "gui/widget.h"
 #include "libwam/intervals.h"
+#include "libwam/random.h"
 #include "psm.h"
 
 
@@ -130,6 +131,113 @@ void Exemple::draw(sf::RenderWindow &win) const {
     win.draw(m_board);
     //win.draw(m_star);
 }
+
+
+
+PresentationScene::PresentationScene(SceneSwitcher *parent) : 
+    Scene(parent)
+{ }
+
+void PresentationScene::_begin() {
+    m_board.start();
+    m_time=1.0f;
+    //MIXER.play("begining", 100.0f, true);
+
+}
+
+void PresentationScene::_end() {
+    m_board.stop();
+    //MIXER.nosound();
+}
+
+void PresentationScene::update(float dt) {
+    m_time -= dt;
+    m_board.update(dt);
+
+    if( m_time < 0.0f) {
+        m_board.processRandomMove();
+        m_time = Random::Percent();
+    }
+}
+
+void PresentationScene::draw(sf::RenderWindow &win) const {
+    win.draw(m_board);
+    win.draw(m_panel);
+
+}
+
+void PresentationScene::load() {
+    auto p = GB.beginRun("_randomit");
+
+    auto fullbox = m_context->getBox();
+    m_board.init("_randomit", fullbox, 6, 4);
+
+    const auto& rect = m_context->getBox();
+    auto center = PSM::Vector(rect.left+rect.width/2, rect.top+rect.height/2);
+
+    sf::Font *f;
+    sf::Texture *t;
+    gui::Widget *w;
+
+    RM.get("font", f);
+    w = new gui::Widget();
+    w->setText("Melangeur", *f, 90, sf::Color::Yellow);
+    DECOM.apply("txtbg", *w);
+    m_panel.add_child(w);
+    w = new gui::Widget();
+    w->setText(L"le jeu du mélange mortel", *f, 25, sf::Color(200,200,200));
+    m_panel.add_child(w);
+
+    m_panel.set_espace(50);
+    w = new gui::Widget();
+    w->setText("New Game", *f, 50, sf::Color(0,200,0));
+    DECOM.apply("underline", *w);
+    m_panel.add_child(w, gui::HALIGN_LEFT);
+    add_event(
+        sf::Mouse::Left, 
+        w->getBox(), 
+        [this]{
+            cout << "go Challenge" << endl;
+            m_context->switchScene(scene::LaunchGame);
+        }
+    );
+    add_event(
+        keymap::gonext,
+        [this]{
+            cout << "go Challenge" << endl;
+            m_context->switchScene(scene::LaunchGame);
+        }
+    );
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+
+    w = new gui::Widget();
+    w->setText("Help", *f, 50, sf::Color(100,100,0));
+    DECOM.apply("underline", *w); 
+    m_panel.add_child(w, gui::HALIGN_LEFT);
+    add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "help" << endl; m_context->switchScene(scene::GlobalHelp);});
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+
+    w = new gui::Widget();
+    w->setText("High Scores", *f, 50, sf::Color(150,50,0));
+    DECOM.apply("underline", *w); 
+    m_panel.add_child(w, gui::HALIGN_LEFT);
+    add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "high score" << endl;m_context->switchScene(scene::GlobalScore);});
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+
+    w = new gui::Widget();
+    w->setText("Quit", *f, 50, colormap::titleColor);
+    DECOM.apply("underline", *w); 
+    m_panel.add_child(w, gui::HALIGN_LEFT);
+    add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "quit" << endl; m_context->pushOverlay(scene::GlobalExit);});
+    add_event(keymap::gonext, [this]{cout << "quit" << endl; m_context->pushOverlay(scene::GlobalExit);});
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+
+    auto box = m_context->getBox();
+    m_panel.center(box);
+    m_panel.update();
+}
+
+
 
 ExitScreen::ExitScreen(SceneSwitcher *parent) : Scene(parent)
 { }

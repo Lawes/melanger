@@ -30,6 +30,19 @@ class Exemple : public Scene {
 
 };
 
+class PresentationScene : public Scene {
+    private:
+        gui::VPanel m_panel;
+        Board m_board;
+        float m_time;
+
+    public:
+        PresentationScene(SceneSwitcher* parent);
+        virtual ~PresentationScene() {}
+
+    DERIVED_Scene
+};
+
 class EndGameScreen : public Scene {
     private:
         gui::VPanel m_panel;

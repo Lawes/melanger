@@ -13,10 +13,14 @@ GameBuffer::GameBuffer() :
     initHighScore("assets/scores.txt");
 }
 
-GameBuffer::Parameters GameBuffer::getConfig() const {
+GameBuffer::Parameters GameBuffer::getConfig(const std::string& name) const {
     Parameters p;
-    m_config.getParameters(m_name, p);
+    m_config.getParameters(name, p);
     return p;
+}
+
+GameBuffer::Parameters GameBuffer::getConfig() const {
+    return getConfig(m_name);
 }
 
 void GameBuffer::saveScore(GameBuffer::HS::Score score) {
@@ -27,7 +31,8 @@ void GameBuffer::saveScore(GameBuffer::HS::Score score) {
         m_highscore.save(flux);
 }
 
-void GameBuffer::beginRun(const std::string& name) {
+GameBuffer::Parameters GameBuffer::beginRun(const std::string& name) {
     m_name = name;
     m_currentScore = 0;
+    return getConfig();
 }

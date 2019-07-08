@@ -21,7 +21,10 @@ class GameBuffer {
     public:
         GameBuffer();
 
-        void beginRun(const std::string& name);
+        Parameters beginRun(const std::string& name);
+        const GameConfig& getGlobalConfig() const {
+            return m_config;
+        }
 
         std::string getGameName() const {
             return m_name;
@@ -51,6 +54,7 @@ class GameBuffer {
         }
 
         Parameters getConfig() const;
+        Parameters getConfig(const std::string& name) const;
 };
 
 #endif
