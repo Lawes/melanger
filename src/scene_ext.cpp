@@ -181,7 +181,7 @@ void PresentationScene::load() {
 
     RM.get("font", f);
     w = new gui::Widget();
-    w->setText("Melangeur", *f, 90, sf::Color::Yellow);
+    w->setText(L"Mélangeur", *f, 90, sf::Color::Yellow);
     DECOM.apply("txtbg", *w);
     m_panel.add_child(w);
     w = new gui::Widget();
@@ -217,13 +217,14 @@ void PresentationScene::load() {
     add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "help" << endl; m_context->switchScene(scene::GlobalHelp);});
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
 
+/*
     w = new gui::Widget();
     w->setText("High Scores", *f, 50, sf::Color(150,50,0));
     DECOM.apply("underline", *w); 
     m_panel.add_child(w, gui::HALIGN_LEFT);
     add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "high score" << endl;m_context->switchScene(scene::GlobalScore);});
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
-
+*/
     w = new gui::Widget();
     w->setText("Quit", *f, 50, colormap::titleColor);
     DECOM.apply("underline", *w); 
