@@ -32,7 +32,7 @@ class Game : public Scene {
 
     private:
         bool m_ispaused, m_hint;
-        float m_time_elapsed;
+        float m_time_elapsed, m_random_timer;
         Board m_board;
         TweenCollection m_actions;
         sf::Texture m_bg, *cadre;

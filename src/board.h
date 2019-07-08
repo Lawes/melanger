@@ -28,10 +28,11 @@ class Board : public GameObject {
 
         void processEchange(int i1, int i2);
         void processRotation(int i, SensRotation sens);
+        void processRandomMove();
 
     private:
         void lastMove(int id);
-        void processRandomMove();
+
 
     protected:
         std::vector<BoardShape> m_shapes;

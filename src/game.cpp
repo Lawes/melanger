@@ -5,6 +5,7 @@
 #include "psm.h"
 
 #include "gui/widget.h"
+#include "libwam/random.h"
 #include "libwam/timeit.h"
 
 #include <iostream>
@@ -20,6 +21,7 @@ Game::Game(SceneSwitcher *parent) :
     m_ispaused(false),
     m_hint(false),
     m_time_elapsed(0),
+    m_random_timer(0),
     m_currentSelect(-1),
     m_s1(-1),
     m_s2(-1),
@@ -198,6 +200,7 @@ void Game::_begin() {
     setGame();
 
     m_time_elapsed = 0.0;
+    m_random_timer = 0.0;
     m_currentSelect = -1;
     m_s1=-1;
     m_s2=-1;
@@ -237,6 +240,11 @@ void Game::update(float dt) {
 
     m_board.update(dt);
 
+    m_random_timer += dt;
+    if( m_random_timer > 1.0f ) {
+        m_board.processRandomMove();
+        m_random_timer = 0.0f;
+    }
 
     build_panel();
 
