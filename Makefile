@@ -33,6 +33,7 @@ ENGINE_OBJ=$(SRCENGINE)/anim.o \
 OBJ=$(SRC)/main.o \
 	$(SRC)/globals.o \
 	$(SRC)/game.o \
+	$(SRC)/chooselvl.o \
 	$(SRC)/scene_ext.o \
 	$(SRC)/decorator_ext.o \
 	$(SRC)/board.o \

@@ -8,28 +8,6 @@
 #include "tween.h"
 #include <SFML/Graphics.hpp>
 
-class Exemple : public Scene {
-    public:
-        Exemple(SceneSwitcher* parent);
-        virtual ~Exemple() {}
-
-    private:
-        Board m_board;
-        TweenCollection m_actions;
-        sf::Texture bg, *cadre;
-        BoardShape shape;
-        sf::FloatRect m_fullbox;
-
-    public:
-        int m_currentSelect, m_s1, m_s2;
-
-        void click();
-
-
-    DERIVED_Scene
-
-};
-
 class PresentationScene : public Scene {
     private:
         gui::VPanel m_panel;

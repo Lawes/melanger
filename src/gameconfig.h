@@ -8,8 +8,9 @@
 class GameConfig {
 	public:
 		struct Parameters {
-			int width, height, size;
-			std::string imgfile;
+			int width, height;
+			float randtime;
+			std::string imgfile, difficulty;
 		};
 
 		bool load(const char * filename);

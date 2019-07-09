@@ -2,46 +2,54 @@
 file=assets/sprites/test.png
 width=4
 height=4
-size=128
+randtime=1
+difficulty=easy
 
 @fractal
 file=assets/sprites/logo.png
-width=10
-height=7
-size=64
+width=4
+height=4
+randtime=4
+difficulty=very hard
 
 @crepuscule
 file=assets/sprites/DSCN1317.png
 width=4
 height=3
-size=256
+randtime=3
+difficulty=normal
 
 @fonzy
 file=assets/sprites/gnougnoun.png
 width=4
 height=3
-size=256
+randtime=3
+difficulty=normal
 
 @grandecasse
 file=assets/sprites/grdCasse.png
 width=4
 height=3
-size=256
+randtime=3
+difficulty=hard
 
 @pourlahorde
 file=assets/sprites/thrall.png
 width=5
 height=4
-size=256
+randtime=5
+difficulty=hard
 
 @_tryit
 file=assets/sprites/tryit.png
 width=2
 height=2
-size=256
+randtime=3
+difficulty=rien
 
 @_randomit
 file=assets/sprites/randomit.png
 width=3
 height=2
-size=256
+randtime=3
+difficulty=rien

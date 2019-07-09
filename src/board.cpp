@@ -12,7 +12,7 @@ Board::Board():
     m_nsx(1),
     m_nsy(1),
     m_nMoves(0),
-    m_taille(10) 
+    m_taille(10)
 {
     
 }
@@ -52,10 +52,8 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
     m_nsx = nsx;
     m_nsy = nsy;
 
-    sf::Image *img;
-    RM.get(imgname, img);
-    m_bgtexture.loadFromImage(*img);
-    auto s = img->getSize();
+    RM.get(imgname, m_bgtexture);
+    auto s = m_bgtexture->getSize();
 
     float textsize = min(
         static_cast<float>(s.x)/static_cast<float>(m_nsx),
@@ -86,7 +84,7 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
             m_lastmove.push_back(id);
             BoardShape& shape = m_shapes[id];
             shape.setTextcoords(sf::FloatRect(textsize*ix, textsize*iy, textsize, textsize));
-            shape.setTexture(&m_bgtexture, RM.getTexture("cadre"));
+            shape.setTexture(m_bgtexture, RM.getTexture("cadre"));
         }
     }
 

@@ -8,6 +8,7 @@
 
 #include "libwam/random.h"
 #include "game.h"
+#include "chooselvl.h"
 #include "scene_ext.h"
 #include "decorator_ext.h"
 #include "globals.h"
@@ -15,7 +16,6 @@
 using namespace std;
 
 void loadRessources() {
-    RM.addImage("test", "assets/sprites/test.png");
     RM.addTexture("fire1", "assets/sprites/fire1.png");
     RM.addTexture("fire2", "assets/sprites/fire2.png");
     RM.addTexture("cadre", "assets/sprites/cadre_board.png");
@@ -30,12 +30,12 @@ void loadRessources() {
 
     const auto& globalcfg= GB.getGlobalConfig();
     for( const auto& name: globalcfg.getSections()) {
-        RM.addImage(name, GB.getConfig(name).imgfile);
+        RM.addTexture(name, GB.getConfig(name).imgfile);
     }
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
-    app.newScene<Exemple>("test");
+    app.newScene<ChooseLvl>(scene::ChooseLvl);
     app.newScene<PresentationScene>(scene::GlobalPresentation);
     app.newScene<Game>(scene::LaunchGame);
     app.newScene<ExitScreen>(scene::GlobalExit);
@@ -67,8 +67,9 @@ int main()
     SceneSwitcher app(window);
 
     loadScenes(app, fullbox);
+    GB.beginRun("test");
 
-    app.switchScene(scene::LaunchGame);
+    app.switchScene(scene::GlobalPresentation);
 
     while (window.isOpen() && !app.wantExit())
     {

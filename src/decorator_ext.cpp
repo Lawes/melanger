@@ -9,8 +9,6 @@
 void simpleBox(gui::Widget &w) {
     w.getRenderSelect().setOutlineColor(sf::Color::Magenta);
     w.getRenderSelect().setOutlineThickness(4.0);
-    w.getRenderSelect().setFillColor(sf::Color::Green);
-    w.getRenderBG().setFillColor(sf::Color::Yellow);
 }
 
 void underline(gui::Widget &w) {
@@ -55,7 +53,7 @@ void turbobg(gui::Widget &w) {
 }
 
 void loadDecorators() {
-    DECOM.add("test", simpleBox);
+    DECOM.add("box", simpleBox);
     DECOM.add("underline", underline);
     DECOM.add("txtbg", textbackground);
     DECOM.add("lightbg", lightbg);

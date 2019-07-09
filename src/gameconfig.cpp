@@ -8,7 +8,8 @@ void setParameters(ConfigReader &device, const string& name, GameConfig::Paramet
 	p.width = device.get<int>(name, "width");
 	p.height = device.get<int>(name, "height");
 	p.imgfile = device.get<string>(name, "file");
-	p.size = device.get<int>(name, "size");
+	p.randtime = device.get<float>(name, "randtime");
+	p.difficulty = device.get<string>(name, "difficulty");
 }
 
 bool GameConfig::load(const char * filename) {

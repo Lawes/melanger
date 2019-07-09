@@ -46,26 +46,10 @@ class Board : public GameObject {
         float m_taille;
         int m_nMoves;
         sf::Vector2f m_origine;
-        sf::Texture m_bgtexture;
+        sf::Texture *m_bgtexture;
 
     DERIVED_GameObject
 
 };
-
-
-class BoardSolo : public Board {
-    public:
-        BoardSolo() : Board(), nextObjectif(-1), timeElapsed(0.0) {};
-
-        void update();
-
-    private:
-        void processRandom();
-        float nextObjectif, timeElapsed;
-
-        virtual void _init();
-
-};
-
 
 #endif

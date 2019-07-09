@@ -1,92 +1,125 @@
 #include "chooselvl.h"
-#include "global.h"
-#include "Input.h"
-#include "sprite.h"
-#include "widgets.h"
-#include "Box.h"
-#include "glFont.h"
+#include "globals.h"
 
-using namespace VODZO;
+
 using namespace std;
-using namespace gui;
 
-ChooseLvl::ChooseLvl(glFont *f) {
-    grid = new GridPanel();
-	grid->setNCol(3);
-    grid->set_pos(50,50);
-    grid->set_espace(0);
-    grid->set_intermot(50);
-    m_petiteFont = RMa.getFont("smallf");
-    m_font = RMa.getFont("f");
+ChooseLvl::ChooseLvl(SceneSwitcher *parent) : 
+    Scene(parent),
+    //m_zobs(m_context->getBox()),
+    m_calme(m_context->getBox())
+{ }
 
-}
 
-void ChooseLvl::_update_HightScore() {
-    MapWidgets::iterator it = m_guiScore.begin();
-    for(; it != m_guiScore.end(); ++it) {
+void ChooseLvl::_begin() {
 
-        string txt("Record : ");
-        txt += ScoringSystem.bestTime(it->first);
-        txt += " ";
-        txt += ScoringSystem.bestMove(it->first);
-        it->second->setText(txt);
+    m_panel.release();
+    clearEvents();
 
+    sf::Font *font;
+    RM.get("font", font);
+
+    const auto& globalcfg= GB.getGlobalConfig();
+    sf::Texture *texture;
+    int count=1;
+    gui::Widget *w;
+    gui::HPanel *hp = new gui::HPanel();
+    hp->set_espace(5);
+    for( const auto& name: globalcfg.getSections()) {
+        if(name[0] == '_')
+            continue;
+        cout << "lvl: " << name << endl;
+        RM.get(name, texture);
+        if( count%4 == 0) {
+            m_panel.add_child(hp);
+            hp = new gui::HPanel();
+            hp->set_espace(5);
+        }
+
+        gui::VPanel *vp = new gui::VPanel();
+        vp->set_espace(5);
+
+        gui::HPanel *ww = new gui::HPanel();
+        ww->set_espace(5);
+        w = new gui::Widget();
+        w->setText("> " + name, *font, 25, sf::Color::Blue);
+        ww->add_child(w);
+
+        w = new gui::Widget();
+        w->setText("("+GB.getConfig(name).difficulty+")", *font, 15, sf::Color::Cyan);
+        ww->add_child(w);
+
+        vp->add_child(ww);
+
+        auto s = texture->getSize();
+        float r = static_cast<float>(s.x)/s.y;
+        w = new gui::Widget();
+        w->set_size(170*r,170);
+        w->getRenderBG().setFillColor(sf::Color::White);
+        w->getRenderBG().setTexture(texture);
+        vp->add_child(w);
+
+        for(auto val: GB.getHighScore().getScore(name, 3, true)) {
+            w = new gui::Widget();
+            w->setText(to_string(val), *font, 15, sf::Color::White);
+            vp->add_child(w);
+        }
+        DECOM.apply("box", *vp);
+        add_event(vp->getBox(),  [vp]{ vp->select();}, [vp]{vp->unSelect();});
+        add_event(
+            sf::Mouse::Left,
+            vp->getBox(),
+            [this, name]{
+                GB.beginRun(name);
+                m_context->switchScene(scene::LaunchGame);
+            }
+        );
+
+        hp->add_child(vp);
+        count++;
     }
+    m_panel.add_child(hp);
+
+    w = new gui::Widget();
+    w->setText("Back to menu", *font, 25, sf::Color::White);
+    DECOM.apply("txtbg", *w);
+    DECOM.apply("underline", *w);
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+    add_event(
+        sf::Mouse::Left,
+        w->getBox(),
+        [this]{
+            m_context->switchScene(scene::GlobalPresentation);
+        }
+    ); 
+    m_panel.add_child(w);
+
+    m_panel.center(m_context->getBox());
+
+    m_panel.update();
+
+    //m_zobs.start();
+    m_calme.start();
 }
 
-void ChooseLvl::_init() {
-    SoundManager.launchMusique("choose");
-    _update_HightScore();
-    m_psm.init();
-    m_spray.init();
-}
-
-void ChooseLvl::update() {
-    m_psm.update();
-    m_spray.update();
-}
-
-void ChooseLvl::draw() {
-    //m_psm.draw();
-    m_spray.draw();
-    grid->draw();
-
-}
-
-void ChooseLvl::addLvl(const string& name, Sprite& sp, const Compositor& comp) {
-
-    VPanel *vpanel = new VPanel();
-    vpanel->add_child( new SimpleText(name, m_font) );
-    SpriteW *spw = new SpriteW(sp);
-    spw->set_height(140);
-    spw->setForegroundDeco(DecoratorManager.get("d5"));
-    spw->setSelectDeco(DecoratorManager.get("d7"));
-    vpanel->add_child( spw );
-
-    SimpleText *st = new SimpleText("", m_petiteFont);
-    st->setColor(Color::grey);
-
-    m_guiScore[name] = st;
-    vpanel->add_child( st, HALIGN_LEFT );
-
-
-
-    Functor<bool> fun(spw, &Widget::setSelect);
-    add_event(MOUSE_MOTION, spw->getBox(), fun);
-
-    add_event(MOUSE_BOUTON, spw->getBox(), comp, SDL_BUTTON_LEFT);
-
-    grid->add_child(vpanel);
+void ChooseLvl::_end() {
+    //m_zobs.stop();
+    m_calme.stop();
 
 }
 
-void ChooseLvl::handle_events(CInput& in) {
-    check_events(in);
-    if( in.Key(SDLK_e) )
-        end();
+void ChooseLvl::update(float dt) {
+    //m_zobs.update(dt);
+    m_calme.update(dt);
 
 }
 
-void ChooseLvl::destroy() {
-    delete grid;
+void ChooseLvl::draw(sf::RenderWindow &win) const {
+    //win.draw(m_zobs);
+    win.draw(m_calme);
+    win.draw(m_panel);
+}
+
+void ChooseLvl::load() {
+  
 }

@@ -4,7 +4,21 @@
 #include "gameobject.h"
 #include "psm.h"
 
+class CalmePsm : public GameObject {
+    private:
+        PSM::ParticuleSystem<
+            PSM::ZoneEmitter,
+            PSM::Vortex,
+            PSM::render_SPRITES,
+            PSM::Former<PSM::DoubleLinearInterp, PSM::IdentityInterp, PSM::Interp_Segment>
+        > m_psm;
 
+    public:
+        CalmePsm(sf::FloatRect rect);
+        virtual ~CalmePsm() {}
+    DERIVED_GameObject;
+
+};
 
 class ZoneObscure : public GameObject {
     private:

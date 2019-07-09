@@ -14,6 +14,48 @@ PSM::Color createRandomColor() {
                  1.0);
 }
 
+
+CalmePsm::CalmePsm(sf::FloatRect rect) :
+    m_psm(1200, 100, 3)
+{
+    m_psm.getEmitter().setZone(rect.left, rect.top, rect.left+rect.width, rect.height);
+    m_psm.getEmitter().setStdVie(0.5);
+    m_psm.getEmitter().setPhysic(1.0, 0.0f);
+    m_psm.getEmitter().setColor(PSM::Color::Black, 0.1f);
+
+    m_psm.getMover().setCenter(PSM::Vector(rect.left+rect.width/2, rect.top+rect.height/2));
+    m_psm.getMover().setAttraction(6.0f);
+
+    m_psm.getRender().setTexture(*RM.getTexture("fuse"));
+
+    m_psm.getFormer().getFade().setBornes(1.0f, 0.0f);
+    m_psm.getFormer().getFade().addPt(0.9f, 0.5f);
+
+    m_psm.getFormer().getSize().setBornes(1.0, 0.0);
+    m_psm.getFormer().getSize().addPt(0.2, 5.0);
+    m_psm.getFormer().getSize().addPt(0.4, 1.0);
+    m_psm.getFormer().getSize().addPt(0.6, 10.0);
+}
+
+void CalmePsm::start() {
+    m_psm.reset();
+    m_psm.start();
+
+}
+
+void CalmePsm::stop() {
+    m_psm.stop();
+}
+
+void CalmePsm::update(float dt) {
+    m_psm.update(dt);
+
+}
+
+void CalmePsm::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    target.draw(m_psm, states);
+}
+
 ZoneObscure::ZoneObscure(sf::FloatRect rect) :
     m_psm(100, 3.0f, 10.0f),
     m_psmline(2000, 50, 4)

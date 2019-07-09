@@ -17,6 +17,7 @@ namespace scene {
     const std::string LaunchGame = "game";
     const std::string GlobalExit = "exit";
     const std::string GlobalPresentation = "presentation";
+    const std::string ChooseLvl = "chooselvl";
     const std::string GlobalHelp = "help";
     const std::string GlobalScore = "score";
     const std::string ScoreGame = "scoregame";

@@ -22,6 +22,7 @@ Game::Game(SceneSwitcher *parent) :
     m_hint(false),
     m_time_elapsed(0),
     m_random_timer(0),
+    m_randtime(1),
     m_currentSelect(-1),
     m_s1(-1),
     m_s2(-1),
@@ -29,7 +30,7 @@ Game::Game(SceneSwitcher *parent) :
 { }
 
 int Game::_getScore(float t, int nmoves) {
-    return static_cast<int>(t*10.0f) + nmoves*2;
+    return static_cast<int>(t*10.0f);
 }
 
 void Game::load() {
@@ -103,16 +104,19 @@ void Game::load() {
 }
 
 void Game::setGame() {
-    sf::Image *img;
-    RM.get("test", img);
-    m_bg.loadFromImage(*img);
+    string name = GB.getGameName();
+    auto param = GB.getConfig();
+    m_randtime = param.randtime;
 
-    m_board.init("test", m_fullbox, 4, 4);
+    sf::Texture *bg;
+    RM.get(name, bg);
+
+    m_board.init(name, m_fullbox, param.width, param.height);
 
     sf::Vector2f v(m_fullbox.left+m_fullbox.width/2, m_fullbox.top+m_fullbox.height/2);
     m_hintshape.setTransform(v, 0, 0);
-    auto s = m_bg.getSize();
-    m_hintshape.setTexture(&m_bg, cadre);
+    auto s = bg->getSize();
+    m_hintshape.setTexture(bg, cadre);
     m_hintshape.setTextcoords(sf::FloatRect(0,0,s.x, s.y));
     m_hintshape.select(false);
 
@@ -247,10 +251,10 @@ void Game::update(float dt) {
 
     m_board.update(dt);
 
-    m_random_timer += dt;
-    if( m_random_timer > 1.0f ) {
+    m_random_timer -= dt;
+    if( m_random_timer < 0.0f ) {
         m_board.processRandomMove();
-        m_random_timer = 0.0f;
+        m_random_timer = m_randtime;
     }
 
     build_panel();
