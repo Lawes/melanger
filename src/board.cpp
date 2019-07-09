@@ -91,7 +91,7 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
     random_shuffle(indice.begin(), indice.end());
 
     for(size_t i=0; i<m_shapes.size(); ++i)
-        m_shapes[i].init(i+1, indice[i], 0, getVectorFromPos(indice[i]), 0.4*m_taille);
+        m_shapes[i].init(i+1, indice[i], Random::Int(0, 3), getVectorFromPos(indice[i]), 0.4*m_taille);
 
 }
 
@@ -120,8 +120,8 @@ bool Board::isFinished() const {
 }
 
 
-void Board::processEchange(int i1, int i2) {
-    m_nMoves++;
+void Board::processEchange(int i1, int i2, bool random) {
+    if(!random) m_nMoves++;
 
     size_t ipos1 = m_shapes[i1].getState().ipos;
     size_t ipos2 = m_shapes[i2].getState().ipos;
@@ -150,8 +150,8 @@ void Board::processEchange(int i1, int i2) {
 
 }
 
-void Board::processRotation(int indice, Board::SensRotation sens) {
-    m_nMoves++;
+void Board::processRotation(int indice, Board::SensRotation sens, bool random) {
+    if(!random) m_nMoves++;
 
     if( sens == Board::SensRotation::Plus) 
         m_shapes[indice].rotatePlus();
@@ -185,15 +185,15 @@ void Board::processRandomMove() {
 
         int ipos1 = v[0]-1,
             ipos2 = v[1]-1;
-        processEchange(ipos1, ipos2);
+        processEchange(ipos1, ipos2, true);
     }
     else {
         if(v.size() > 0) {
             int ipos = v[0]-1;
             if( Random::Percent() > 0.5)
-                processRotation(ipos, Board::SensRotation::Plus);
+                processRotation(ipos, Board::SensRotation::Plus, true);
             else
-                processRotation(ipos, Board::SensRotation::Moins);
+                processRotation(ipos, Board::SensRotation::Moins, true);
         }
     }
 

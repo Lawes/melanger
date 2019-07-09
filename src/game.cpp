@@ -301,9 +301,7 @@ void Game::panel_endgame(const wstring& txt, int totalScore, int time, int nmove
     w->setText(txt, *f, 50, sf::Color(227,69,69));
     m_panel_endgame.add_child(w);
 
-    gui::VPanel *vp = new gui::VPanel();
-    vp->set_espace(2);
-    vp->set_border(2);
+    gui::VPanel *vp = new gui::VPanel(2,2);
 
     gui::HPanel *hp = new gui::HPanel();
     w = new gui::Widget();

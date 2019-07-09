@@ -23,8 +23,7 @@ void ChooseLvl::_begin() {
     sf::Texture *texture;
     int count=1;
     gui::Widget *w;
-    gui::HPanel *hp = new gui::HPanel();
-    hp->set_espace(5);
+    gui::HPanel *hp = new gui::HPanel(20,5);
     for( const auto& name: globalcfg.getSections()) {
         if(name[0] == '_')
             continue;
@@ -32,17 +31,15 @@ void ChooseLvl::_begin() {
         RM.get(name, texture);
         if( count%4 == 0) {
             m_panel.add_child(hp);
-            hp = new gui::HPanel();
-            hp->set_espace(5);
+            hp = new gui::HPanel(20,5);
         }
 
-        gui::VPanel *vp = new gui::VPanel();
-        vp->set_espace(5);
+        gui::VPanel *vp = new gui::VPanel(5,0);
 
-        gui::HPanel *ww = new gui::HPanel();
-        ww->set_espace(5);
+        gui::HPanel *ww = new gui::HPanel(5,0);
+
         w = new gui::Widget();
-        w->setText("> " + name, *font, 25, sf::Color::Blue);
+        w->setText("> " + name, *font, 25, sf::Color::Green);
         ww->add_child(w);
 
         w = new gui::Widget();
@@ -75,7 +72,7 @@ void ChooseLvl::_begin() {
             }
         );
 
-        hp->add_child(vp);
+        hp->add_child(vp, gui::VALIGN_TOP);
         count++;
     }
     m_panel.add_child(hp);
@@ -121,5 +118,7 @@ void ChooseLvl::draw(sf::RenderWindow &win) const {
 }
 
 void ChooseLvl::load() {
+    m_panel.set_espace(0);
+    m_panel.set_border(0);
   
 }

@@ -37,7 +37,7 @@ void PresentationScene::update(float dt) {
 
     if( m_time < 0.0f) {
         m_board.processRandomMove();
-        m_time = Random::Percent();
+        m_time = Random::Percent()/2;
     }
 }
 
@@ -73,7 +73,7 @@ void PresentationScene::load() {
     w = new gui::Widget();
     w->setText("New Game", *f, 50, sf::Color(0,200,0));
     DECOM.apply("underline", *w);
-    m_panel.add_child(w, gui::HALIGN_LEFT);
+    m_panel.add_child(w);
     add_event(
         sf::Mouse::Left, 
         w->getBox(), 
@@ -94,7 +94,7 @@ void PresentationScene::load() {
     w = new gui::Widget();
     w->setText("Help", *f, 50, sf::Color(100,100,0));
     DECOM.apply("underline", *w); 
-    m_panel.add_child(w, gui::HALIGN_LEFT);
+    m_panel.add_child(w);
     add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "help" << endl; m_context->switchScene(scene::GlobalHelp);});
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
 
@@ -109,7 +109,7 @@ void PresentationScene::load() {
     w = new gui::Widget();
     w->setText("Quit", *f, 50, colormap::titleColor);
     DECOM.apply("underline", *w); 
-    m_panel.add_child(w, gui::HALIGN_LEFT);
+    m_panel.add_child(w);
     add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "quit" << endl; m_context->pushOverlay(scene::GlobalExit);});
     add_event(keymap::gonext, [this]{cout << "quit" << endl; m_context->pushOverlay(scene::GlobalExit);});
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});

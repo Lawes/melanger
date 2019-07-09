@@ -132,7 +132,7 @@ namespace gui {
 
     class BarPanel : public Panel {
         public:
-            BarPanel() : m_espace(2), m_border(10)   {}
+            BarPanel(float espace=2, float border=10) : m_espace(espace), m_border(border)   {}
             virtual ~BarPanel() {};
 
             virtual void release();
@@ -157,12 +157,15 @@ namespace gui {
 
     class HPanel : public BarPanel {
         public:
+            HPanel(float espace=2, float border=10) : BarPanel(espace, border) {}
+
             virtual ~HPanel() {};
             virtual void add_child(Widget *w, gui::Alignement al = VALIGN_CENTER);
     };
 
     class VPanel : public BarPanel {
         public:
+            VPanel(float espace=2, float border=10) : BarPanel(espace, border) {}
             virtual ~VPanel() {};
             virtual void add_child(Widget *w, Alignement al = HALIGN_CENTER);
     };
