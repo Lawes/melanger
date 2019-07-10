@@ -47,4 +47,15 @@ class ExitScreen : public Scene {
     DERIVED_Scene
 };
 
+class HelpScreen : public Scene {
+    private:
+        gui::VPanel m_panel;
+    
+    public:
+        HelpScreen(SceneSwitcher* parent);
+        virtual ~HelpScreen() {}
+
+    DERIVED_Scene
+};
+
 #endif

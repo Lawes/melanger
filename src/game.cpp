@@ -127,7 +127,7 @@ void Game::launch_hint(bool open) {
 
     auto *s = new Sequence();
     if( open) {
-        s->add( new TweenerLin<float>(m_hintshape.getScale(), 0.0f, 250.0f, 1.0f) );
+        s->add( new TweenerLin<float>(m_hintshape.getScale(), 0.0f, 300.0f, 1.0f) );
         s->add( new IntervalAction(5.0f, []{cout << "coucou hint" << endl;}) );
     }
     else{

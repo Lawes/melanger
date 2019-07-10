@@ -126,7 +126,7 @@ void BoardShape::doTransformation(
 	const sf::Vector2f& trans) 
 {
     const float deg2Rad	= 0.01745329f;
-	float scadre = scale + 6 *scale/43;
+	float scadre = scale + 3 *scale/43;
     float cs = std::cos(angle*deg2Rad);
     float sn = std::sin(angle*deg2Rad);
 
@@ -177,4 +177,3 @@ void BoardShape::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 		target.draw(m_select, states);
 	}
 }
-

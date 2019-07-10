@@ -261,3 +261,29 @@ void EndGameScreen::draw(sf::RenderWindow &win) const {
     win.draw(m_psm);
     win.draw(m_panel);
 }
+
+HelpScreen::HelpScreen(SceneSwitcher *parent) : 
+    Scene(parent)
+{ }
+
+void HelpScreen::_begin() {
+
+    //MIXER.play("begining", 100.0f, true);
+
+}
+
+void HelpScreen::_end() {
+
+    //MIXER.nosound();
+}
+
+void HelpScreen::update(float dt) {
+
+}
+
+void HelpScreen::draw(sf::RenderWindow &win) const {
+    win.draw(m_panel);
+}
+
+void HelpScreen::load() {
+}
