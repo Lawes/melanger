@@ -24,7 +24,7 @@ CalmePsm::CalmePsm(sf::FloatRect rect) :
     m_psm.getEmitter().setColor(PSM::Color::Black, 0.1f);
 
     m_psm.getMover().setCenter(PSM::Vector(rect.left+rect.width/2, rect.top+rect.height/2));
-    m_psm.getMover().setAttraction(6.0f);
+    m_psm.getMover().setAttraction(-6.0f);
 
     m_psm.getRender().setTexture(*RM.getTexture("fuse"));
 

@@ -147,12 +147,12 @@ void Game::build_panel() {
     auto name = GB.getGameName();
 
     gui::Widget *w = new gui::Widget();
-    w->setText(name, *f, 50, sf::Color::Yellow);
+    w->setText(name, *f, 40, sf::Color::Yellow);
     m_panel.add_child(w, gui::HALIGN_LEFT);
 
     gui::HPanel *hp = new gui::HPanel();
     w = new gui::Widget();
-    w->setText("Time : ", *f, 30, sf::Color::Blue);
+    w->setText("Time : ", *f, 30, sf::Color::Cyan);
     hp->add_child(w);
     w = new gui::Widget();
     w->setText(Timeit::to_string(m_time_elapsed), *f, 30, sf::Color::Magenta);
@@ -161,14 +161,14 @@ void Game::build_panel() {
 
     hp = new gui::HPanel();
     w = new gui::Widget();
-    w->setText("Moves : ", *f, 30, sf::Color::Blue);
+    w->setText("Moves : ", *f, 30, sf::Color::Cyan);
     hp->add_child(w);
     w = new gui::Widget();
     w->setText(to_string(m_board.getNbMoves()), *f, 30, sf::Color::Magenta);
     hp->add_child(w);
     m_panel.add_child(hp, gui::HALIGN_LEFT);
 
-    m_panel.juxtaposeHorizontal(m_fullbox, gui::HALIGN_RIGHT, 5);
+    m_panel.juxtaposeHorizontal(m_fullbox, gui::HALIGN_RIGHT, 2);
     m_panel.update();
 }
 
@@ -211,7 +211,7 @@ void Game::_begin() {
     setGame();
 
     m_time_elapsed = 0.0;
-    m_random_timer = 0.0;
+    m_random_timer = m_randtime;
     m_currentSelect = -1;
     m_s1=-1;
     m_s2=-1;

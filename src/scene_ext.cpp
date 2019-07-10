@@ -16,24 +16,27 @@
 using namespace std;
 
 PresentationScene::PresentationScene(SceneSwitcher *parent) : 
-    Scene(parent)
+    Scene(parent),
+    m_calme(m_context->getBox())
 { }
 
 void PresentationScene::_begin() {
     m_board.start();
     m_time=1.0f;
     //MIXER.play("begining", 100.0f, true);
-
+    m_calme.start();
 }
 
 void PresentationScene::_end() {
     m_board.stop();
+    m_calme.stop();
     //MIXER.nosound();
 }
 
 void PresentationScene::update(float dt) {
     m_time -= dt;
     m_board.update(dt);
+    m_calme.update(dt);
 
     if( m_time < 0.0f) {
         m_board.processRandomMove();
@@ -42,6 +45,7 @@ void PresentationScene::update(float dt) {
 }
 
 void PresentationScene::draw(sf::RenderWindow &win) const {
+    win.draw(m_calme);
     win.draw(m_board);
     win.draw(m_panel);
 
@@ -263,27 +267,56 @@ void EndGameScreen::draw(sf::RenderWindow &win) const {
 }
 
 HelpScreen::HelpScreen(SceneSwitcher *parent) : 
-    Scene(parent)
+    Scene(parent),
+    m_calme(m_context->getBox())
 { }
 
 void HelpScreen::_begin() {
-
+    m_calme.start();
     //MIXER.play("begining", 100.0f, true);
 
 }
 
 void HelpScreen::_end() {
-
+    m_calme.stop();
     //MIXER.nosound();
 }
 
 void HelpScreen::update(float dt) {
-
+    m_calme.update(dt);
 }
 
 void HelpScreen::draw(sf::RenderWindow &win) const {
+    win.draw(m_calme);
     win.draw(m_panel);
 }
 
 void HelpScreen::load() {
+    sf::Font *f;
+    sf::Texture *t;
+
+    m_panel.set_espace(30);
+    m_panel.set_border(0);
+    RM.get("font", f);
+    RM.get("help", t);
+    gui::Widget *w = new gui::Widget();
+    w->getRenderBG().setFillColor(sf::Color::White);
+    w->getRenderBG().setTexture(t);
+    auto s = t->getSize();
+    float r = 800.0f/s.x;
+    w->set_size(800,s.y*r);
+    m_panel.add_child(w);
+
+    w = new gui::Widget();
+    w->setText("Back to menu", *f, 25);
+    DECOM.apply("txtbg", *w);
+    DECOM.apply("underline", *w);
+    m_panel.add_child(w);
+    add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "goback" << endl;m_context->switchScene(scene::GlobalPresentation);});
+    add_event(keymap::gonext, [this]{cout << "goback" << endl;m_context->switchScene(scene::GlobalPresentation);});
+    add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
+
+    m_panel.center(m_context->getBox());
+    //m_panel.set_pos(0, -65);
+    m_panel.update();
 }

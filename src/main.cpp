@@ -24,6 +24,7 @@ void loadRessources() {
     RM.addTexture("sun", "assets/sprites/sun1.png");
     RM.addTexture("star", "assets/sprites/star.png");
     RM.addTexture("fuse", "assets/sprites/particule.png");
+    RM.addTexture("help", "assets/sprites/help101.png");
     
     RM.addFont("font", "assets/fonts/LiberationMono-Regular.ttf");
 
@@ -40,6 +41,7 @@ void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<Game>(scene::LaunchGame);
     app.newScene<ExitScreen>(scene::GlobalExit);
     app.newScene<EndGameScreen>(scene::ScoreGame);
+    app.newScene<HelpScreen>(scene::GlobalHelp);
 }
 
 int main()

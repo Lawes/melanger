@@ -1,4 +1,4 @@
-@test
+@_test
 file=assets/sprites/test.png
 width=4
 height=4
@@ -40,12 +40,12 @@ height=4
 randtime=5
 difficulty=hard
 
-@_tryit
+@tryit
 file=assets/sprites/tryit.png
 width=2
 height=2
 randtime=3
-difficulty=rien
+difficulty=easy
 
 @_randomit
 file=assets/sprites/randomit.png

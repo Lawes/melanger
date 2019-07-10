@@ -13,6 +13,7 @@ class PresentationScene : public Scene {
         gui::VPanel m_panel;
         Board m_board;
         float m_time;
+        CalmePsm m_calme;
 
     public:
         PresentationScene(SceneSwitcher* parent);
@@ -50,6 +51,7 @@ class ExitScreen : public Scene {
 class HelpScreen : public Scene {
     private:
         gui::VPanel m_panel;
+        CalmePsm m_calme;
     
     public:
         HelpScreen(SceneSwitcher* parent);
