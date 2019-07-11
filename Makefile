@@ -48,7 +48,7 @@ OBJ=$(SRC)/main.o \
 	$(GUI_OBJ) \
 	$(PSM_OBJ)
 
-CXXFLAGS=-DSFML_STATIC -W -Ie:\opt\SFML\include -Isrc -Isrc/libwam -Isrc/psm -Isrc/gui -Isrc/engine -g
+CXXFLAGS=-DSFML_STATIC -Wall -Ie:\opt\SFML\include -Isrc -Isrc/libwam -Isrc/psm -Isrc/gui -Isrc/engine -g
 LFLAGS=-Le:\opt\SFML\lib -lsfml-main -lsfml-system -lsfml-graphics -lsfml-window -lsfml-audio -lopengl32
 
 EXEC=$(BIN)/main.exe

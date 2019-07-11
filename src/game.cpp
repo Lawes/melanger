@@ -24,10 +24,10 @@ Game::Game(SceneSwitcher *parent) :
     m_time_elapsed(0),
     m_random_timer(0),
     m_randtime(1),
+    m_zobs(m_context->getBox()),
     m_currentSelect(-1),
     m_s1(-1),
-    m_s2(-1),
-    m_zobs(m_context->getBox())
+    m_s2(-1)
 { }
 
 int Game::_getScore(float t, int nmoves) {

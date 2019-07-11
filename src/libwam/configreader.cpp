@@ -94,7 +94,6 @@ void ConfigReader::read(const char * fileConfig) {
 }
 
 void ConfigReader::write(ostream& flux) const {
-    MapTitle::const_iterator it_title = m_listeEntry.begin();
     for(const auto &etitle:m_listeEntry) {
         flux << '@' << etitle.first << endl;
 

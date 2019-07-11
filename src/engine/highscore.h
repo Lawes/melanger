@@ -25,7 +25,6 @@ class HighScore {
             ConfigReader::Entries liste;
             device.getTitles(liste);
 
-            auto it = liste.begin();
             for( auto name:liste) {
                 LvlScore scores;
                 device.get(name, "score", scores);

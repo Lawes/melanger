@@ -17,8 +17,7 @@ int Astar::remonteWay(int from, int to, bool withConstrains) {
 	int current = from, test;
 	path.push_back(from);
 
-    if( from == to )
-        return from;
+    if( from == to ) return from;
 
 	while((test=nodes_score[current].parent)  != to) {
 		current = test;

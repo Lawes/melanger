@@ -57,11 +57,7 @@ void PresentationScene::load() {
     auto fullbox = m_context->getBox();
     m_board.init("_randomit", fullbox, 6, 4);
 
-    const auto& rect = m_context->getBox();
-    auto center = PSM::Vector(rect.left+rect.width/2, rect.top+rect.height/2);
-
     sf::Font *f;
-    sf::Texture *t;
     gui::Widget *w;
 
     RM.get("font", f);

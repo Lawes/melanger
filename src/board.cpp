@@ -11,8 +11,8 @@ using namespace std;
 Board::Board():
     m_nsx(1),
     m_nsy(1),
-    m_nMoves(0),
-    m_taille(10)
+    m_taille(10),
+    m_nMoves(0)
 {
     
 }

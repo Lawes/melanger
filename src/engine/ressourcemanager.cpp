@@ -19,7 +19,6 @@ bool RessourceManager::addAnimations(const string& filename) {
 
         vector<string> frames;
         device.get(anim, "frame", frames);
-        size_t nframes = frames.size();
         int cycle = device.get<int>(anim, "cycle");
         a->cycle(cycle==1);
 

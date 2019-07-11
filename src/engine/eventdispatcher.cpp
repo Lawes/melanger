@@ -50,6 +50,5 @@ void EventDispatcher::check_events(CInput& in) {
 }
 
 void EventDispatcher::clearEvents() {
-    cout << "clear eventsDispatcher" << endl;
     m_listeEvents.clear();
 }

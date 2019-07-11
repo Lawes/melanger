@@ -65,7 +65,6 @@ void Widget::update() {
     if( m_drawText) {
         Widget::Box box(m_text.getLocalBounds());
         auto csize = m_text.getCharacterSize();
-        int dy = box.top;
         float x = m_area.left - (box.width + box.left - m_area.width)/2,
             y = m_area.top - (csize - m_area.height)/2;
         m_text.setPosition(x, y);
