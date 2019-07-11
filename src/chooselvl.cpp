@@ -111,7 +111,7 @@ void ChooseLvl::update(float dt) {
 
 }
 
-void ChooseLvl::draw(sf::RenderWindow &win) const {
+void ChooseLvl::draw(sf::RenderTarget &win) const {
     //win.draw(m_zobs);
     win.draw(m_calme);
     win.draw(m_panel);

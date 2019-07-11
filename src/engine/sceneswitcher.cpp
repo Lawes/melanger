@@ -22,16 +22,15 @@ sf::FloatRect SceneSwitcher::getBox() const {
     return s;
 }
 
-void SceneSwitcher::draw() {
-    m_win.clear();
+void SceneSwitcher::draw(sf::RenderTarget& win) {
+    win.clear();
     for(auto it = m_onthefly.rbegin(); it != m_onthefly.rend(); ++it) {
 
-        (*it)->draw(m_win);
+        (*it)->draw(win);
 
     }
     for(auto it = m_overlay.rbegin(); it != m_overlay.rend(); ++it)
-        (*it)->draw(m_win);
-    m_win.display();
+        (*it)->draw(win);
 }
 
 void SceneSwitcher::switchScene(const std::string& name) {
@@ -108,5 +107,6 @@ void SceneSwitcher::run() {
         }
     }
     //cout << "draw" << endl;
-    draw();
+    draw(m_win);
+    m_win.display();
 }

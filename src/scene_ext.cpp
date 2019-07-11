@@ -44,7 +44,7 @@ void PresentationScene::update(float dt) {
     }
 }
 
-void PresentationScene::draw(sf::RenderWindow &win) const {
+void PresentationScene::draw(sf::RenderTarget &win) const {
     win.draw(m_calme);
     win.draw(m_board);
     win.draw(m_panel);
@@ -173,7 +173,7 @@ void ExitScreen::_begin() { }
 void ExitScreen::_end() { }
 void ExitScreen::update(float dt) { }
 
-void ExitScreen::draw(sf::RenderWindow &win) const {
+void ExitScreen::draw(sf::RenderTarget &win) const {
     win.draw(m_panel);
 }
 
@@ -261,7 +261,7 @@ void EndGameScreen::update(float dt) {
     m_psm.update(dt);
 }
 
-void EndGameScreen::draw(sf::RenderWindow &win) const {
+void EndGameScreen::draw(sf::RenderTarget &win) const {
     win.draw(m_psm);
     win.draw(m_panel);
 }
@@ -286,7 +286,7 @@ void HelpScreen::update(float dt) {
     m_calme.update(dt);
 }
 
-void HelpScreen::draw(sf::RenderWindow &win) const {
+void HelpScreen::draw(sf::RenderTarget &win) const {
     win.draw(m_calme);
     win.draw(m_panel);
 }

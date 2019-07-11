@@ -12,7 +12,7 @@ class SceneSwitcher;
     public: \
         virtual void load() terminal \
         virtual void update(float dt) terminal \
-        virtual void draw(sf::RenderWindow &win) const terminal \
+        virtual void draw(sf::RenderTarget &win) const terminal \
     private: \
         virtual void _begin() terminal \
         virtual void _end() terminal

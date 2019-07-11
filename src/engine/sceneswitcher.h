@@ -55,7 +55,7 @@ class SceneSwitcher {
         sf::FloatRect getBox() const;
 
         private:
-            void draw();
+            void draw(sf::RenderTarget& win);
 
     private:
         sf::RenderWindow& m_win;

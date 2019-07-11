@@ -341,7 +341,7 @@ void Game::panel_endgame(const wstring& txt, int totalScore, int time, int nmove
     m_panel_endgame.update();
 }
 
-void Game::draw(sf::RenderWindow &win) const {
+void Game::draw(sf::RenderTarget &win) const {
     win.draw(m_zobs);
     win.draw(m_board);
 
