@@ -56,6 +56,7 @@ class SceneSwitcher {
 
         private:
             void draw(sf::RenderTarget& win);
+            void drawSceneName(const std::string& name,sf::RenderTarget& win);
 
     private:
         sf::RenderWindow& m_win;
