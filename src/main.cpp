@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "libwam/random.h"
+#include "engine/sceneswitcher.h"
 #include "game.h"
 #include "chooselvl.h"
 #include "scene_ext.h"

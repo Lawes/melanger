@@ -28,6 +28,8 @@ ENGINE_OBJ=$(SRCENGINE)/anim.o \
            $(SRCENGINE)/eventdispatcher.o \
 		   $(SRCENGINE)/input.o \
 		   $(SRCENGINE)/scene.o \
+		   $(SRCENGINE)/sceneswitcher.o \
+		   $(SRCENGINE)/transitionscene.o \
 		   $(SRCENGINE)/ressourcemanager.o \
 		   $(SRCENGINE)/mixer.o
 OBJ=$(SRC)/main.o \

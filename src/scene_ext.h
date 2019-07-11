@@ -1,7 +1,8 @@
 #ifndef SCENE_EXTENTION_HEADER
 #define SCENE_EXTENTION_HEADER
 
-#include "scene.h"
+#include "engine/scene.h"
+#include "engine/sceneswitcher.h"
 #include "board.h"
 #include "boardshape.h"
 #include "psmeffects.h"

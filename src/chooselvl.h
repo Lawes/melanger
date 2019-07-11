@@ -1,7 +1,8 @@
 #ifndef CHOOSELVL_HEADER
 #define CHOOSELVL_HEADER
 
-#include "scene.h"
+#include "engine/scene.h"
+#include "engine/sceneswitcher.h"
 #include "gui/widget.h"
 #include "psmeffects.h"
 #include <SFML/Graphics.hpp>

@@ -7,6 +7,7 @@
 #include "gui/widget.h"
 #include "libwam/random.h"
 #include "libwam/timeit.h"
+#include "engine/sceneswitcher.h"
 
 #include <iostream>
 #include "globals.h"
