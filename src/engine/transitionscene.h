@@ -1,0 +1,4 @@
+#ifndef TRANSITION_SCENE_HEADER
+#define TRANSITION_SCENE_HEADER
+
+#endif
