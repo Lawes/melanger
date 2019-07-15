@@ -12,6 +12,7 @@
 #include "chooselvl.h"
 #include "scene_ext.h"
 #include "decorator_ext.h"
+#include "transition_ext.h"
 #include "globals.h"
 
 using namespace std;
@@ -43,6 +44,7 @@ void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<ExitScreen>(scene::GlobalExit);
     app.newScene<EndGameScreen>(scene::ScoreGame);
     app.newScene<HelpScreen>(scene::GlobalHelp);
+    app.newTransition<TestTansition>("trans");
 }
 
 int main()

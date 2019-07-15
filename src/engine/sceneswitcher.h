@@ -8,12 +8,14 @@
 #include <SFML/Graphics.hpp>
 
 #include "scene.h"
+#include "transitionscene.h"
 #include "input.h"
 #include "manager.h"
 
 class SceneSwitcher {
     public:
         typedef std::unique_ptr<Scene> ScenePrt;
+        typedef std::unique_ptr<TransitionScene> TransScenePrt;
     public:
         SceneSwitcher(sf::RenderWindow &win);
         ~SceneSwitcher();
@@ -25,6 +27,16 @@ class SceneSwitcher {
             newscene->load();
             T *res = newscene.get();
             m_scenes.add(name, std::move(newscene));
+            return res;
+        }
+
+        template<class T>
+        T* newTransition(const std::string& name) {
+            auto newtrans = std::unique_ptr<T>(new T(this));
+            newtrans->setName(name);
+            newtrans->load();
+            T *res = newtrans.get();
+            m_transscenes.add(name, std::move(newtrans));
             return res;
         }
 
@@ -53,10 +65,10 @@ class SceneSwitcher {
         }
 
         sf::FloatRect getBox() const;
+        sf::View getView() const { return m_win.getView();}
 
-        private:
-            void draw(sf::RenderTarget& win);
-            void drawSceneName(const std::string& name,sf::RenderTarget& win);
+        void draw(sf::RenderTarget& win);
+        void drawSceneName(const std::string& name,sf::RenderTarget& win);
 
     private:
         sf::RenderWindow& m_win;
@@ -65,6 +77,7 @@ class SceneSwitcher {
         sf::Clock m_clock;
         std::list<Scene*> m_onthefly, m_overlay;
         Manager<Scene, std::string> m_scenes;
+        Manager<TransitionScene, std::string> m_transscenes;
         std::string m_next;
 };
 

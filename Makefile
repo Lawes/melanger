@@ -37,6 +37,7 @@ OBJ=$(SRC)/main.o \
 	$(SRC)/game.o \
 	$(SRC)/chooselvl.o \
 	$(SRC)/scene_ext.o \
+	$(SRC)/transition_ext.o \
 	$(SRC)/decorator_ext.o \
 	$(SRC)/board.o \
 	$(SRC)/boardshape.o \
