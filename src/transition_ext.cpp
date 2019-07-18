@@ -70,41 +70,6 @@ void Transition::draw() {
 
 }
 
-void FonduTransition::load(Scene *sc_before, Scene *sc_after) {
-    SDL_Surface *img = SDL_CreateRGBSurface(
-            SDL_HWSURFACE,
-            Windows_width,
-            Windows_height,
-            24, 0, 0, 0, 0);
-
-    sc_before->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img->pixels);
-    reverseSurface(img);
-    m_sp1.init(img, GL_RGB);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-    sc_after->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img->pixels);
-
-    reverseSurface(img);
-    m_sp2.init(img, GL_RGB);
-
-    SDL_FreeSurface(img);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-}
-
 void FonduTransition::_init() {
     load(m_context->getCurrent(), m_context->getNext());
 
@@ -168,48 +133,6 @@ void VerreTransition::_captureScreen(SDL_Surface *img1, SDL_Surface *img2) {
     SDL_FreeSurface(dest);
 }
 
-void VerreTransition::load(Scene *sc_before, Scene *sc_after) {
-    SDL_Surface *img1 = SDL_CreateRGBSurface(
-            SDL_HWSURFACE,
-            Windows_width,
-            Windows_height,
-            24, 0, 0, 0, 0);
-    SDL_Surface *img2 = SDL_CreateRGBSurface(
-            SDL_HWSURFACE,
-            Windows_width,
-            Windows_height,
-            24, 0, 0, 0, 0);
-
-    sc_before->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img1->pixels);
-    reverseSurface(img1);
-
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    sc_after->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img2->pixels);
-    reverseSurface(img2);
-
-    _captureScreen(img1, img2);
-
-    SDL_FreeSurface(img1);
-    SDL_FreeSurface(img2);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-
-}
 
 void VerreTransition::_init() {
 
@@ -274,44 +197,7 @@ void VerreTransition::update() {
 const int RainTransition::SizeX = 50;
 const int RainTransition::SizeY = 35;
 
-void RainTransition::load(Scene *sc_before, Scene *sc_after) {
-    SDL_Surface *img = SDL_CreateRGBSurface(
-            SDL_HWSURFACE,
-            Windows_width,
-            Windows_height,
-            24, 0, 0, 0, 0);
 
-
-    sc_before->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img->pixels);
-    reverseSurface(img);
-    sp_bg.init(img, GL_RGB);
-
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    sc_after->draw();
-
-    glReadPixels(0, 0,
-            Windows_width,
-            Windows_height,
-            GL_RGB, GL_UNSIGNED_BYTE,
-            img->pixels);
-    reverseSurface(img);
-
-    _captureScreen(img);
-
-    SDL_FreeSurface(img);
-
-    glClear(GL_COLOR_BUFFER_BIT);
-
-
-}
 
 void RainTransition::_captureScreen(SDL_Surface *img1){
 
