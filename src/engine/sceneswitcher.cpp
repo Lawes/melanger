@@ -43,6 +43,20 @@ void SceneSwitcher::draw(sf::RenderTarget& win) {
         (*it)->draw(win);
 }
 
+
+void SceneSwitcher::switchSceneWithTransition(const string& scenename, const string& transname) {
+    TransitionScene *ts = m_transscenes.get(transname);
+    if(ts == nullptr) {
+        switchScene(scenename);
+        return;
+    }
+    ts->setFromToTexture(scenename);
+    endAllScene();
+    ts->begin();
+    m_onthefly.push_back(ts);
+    m_next = scenename;
+}
+
 void SceneSwitcher::switchScene(const std::string& name) {
     endAllScene();
     m_next = name;

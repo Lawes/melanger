@@ -51,6 +51,7 @@ class SceneSwitcher {
         void endAllScene();
 
         void switchScene(const std::string& name);
+        void switchSceneWithTransition(const std::string& scenename, const std::string& transname);
         void pushOverlay(const std::string& name);
         void pushScene(const std::string& name);
 
