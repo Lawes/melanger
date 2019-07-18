@@ -14,4 +14,122 @@ class TestTansition : public TransitionScene {
     DERIVED_Scene
 };
 
+
+class Transition : public Scene {
+  public:
+    Transition(float t):Scene(), m_p(0.0), m_timeLimit(t), m_timeElapsed(0.0)
+        {}
+    virtual ~Transition() {};
+    virtual void update();
+    virtual void draw();
+
+  protected:
+    float  m_p,  m_timeLimit;
+
+  private:
+    float m_timeElapsed;
+    virtual void _init() {};
+
+};
+
+class FonduTransition : public Transition {
+  public:
+    FonduTransition(float t, SceneSwitcher *context) :
+        Transition(t) { setContext(context); }
+
+    virtual void draw();
+
+
+  private:
+    void load(Scene *sc_before, Scene *sc_after);
+
+    Sprite m_sp1, m_sp2;
+    VODZO::Color m_color;
+    virtual void _init();
+
+};
+
+
+
+
+class VerreTransition : public Transition {
+    static const int SizeX;
+    static const int SizeY;
+  public:
+    VerreTransition(float t, SceneSwitcher *context) :
+        Transition(t) {
+            setContext(context);
+            m_listeSprite.resize(SizeX*SizeY);
+
+            dxf = static_cast<float>(Windows_width)/SizeX;
+            dyf = static_cast<float>(Windows_height)/SizeY;
+
+        }
+
+    virtual void draw();
+    virtual void update();
+
+  private:
+    void load(Scene *sc_before, Scene *sc_after);
+
+    float dxf, dyf;
+
+    struct SpriteContainer {
+        Sprite sp[2];
+        int posX, posY;
+        float angleZ, alpha;
+    };
+    std::vector< SpriteContainer > m_listeSprite;
+    std::vector< int > m_ordre;
+
+    virtual void _init();
+
+    Organizer m_mixer;
+
+    void _captureScreen(SDL_Surface *img1,
+                        SDL_Surface *img2);
+
+};
+
+
+class RainTransition : public Transition {
+    private:
+
+        static const int SizeX;
+        static const int SizeY;
+
+        struct SpriteContainer {
+            Sprite sp;
+            VODZO::Vector2 pos;
+            float angleZ, alpha;
+        };
+
+        std::vector< SpriteContainer > m_listeSprite;
+        std::vector< int > m_ordre, to_plot;
+        int m_current_sp;
+
+        Sprite sp_bg;
+        float dxf, dyf;
+
+        Organizer m_mixer;
+
+        void load(Scene *sc_before, Scene *sc_after);
+        void _captureScreen(SDL_Surface *img1);
+
+        virtual void _init();
+
+    public:
+        RainTransition(float t, SceneSwitcher *context) : Transition(t) {
+                setContext(context);
+                m_listeSprite.resize(SizeX*SizeY);
+
+                dxf = static_cast<float>(Windows_width)/SizeX;
+                dyf = static_cast<float>(Windows_height)/SizeY;
+                m_current_sp = SizeX*SizeY;
+            }
+        virtual void draw();
+        virtual void update();
+};
+
+
 #endif

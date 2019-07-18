@@ -95,7 +95,16 @@ void PresentationScene::load() {
     w->setText("Help", *f, 50, sf::Color(100,100,0));
     DECOM.apply("underline", *w); 
     m_panel.add_child(w);
-    add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "help" << endl; m_context->switchScene(scene::GlobalHelp);});
+    //add_event(sf::Mouse::Left, w->getBox(), [this]{cout << "help" << endl; m_context->switchScene(scene::GlobalHelp);});
+    add_event(
+        sf::Mouse::Left,
+        w->getBox(),
+        [this]{
+            cout << "help" << endl;
+            //m_context->switchScene(scene::GlobalHelp);
+            m_context->switchSceneWithTransition(scene::GlobalHelp, "trans");
+        }
+    );
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});
 
 /*
