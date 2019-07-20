@@ -24,3 +24,9 @@ void TransitionScene::setFromToTexture(const string &nextname) {
     m_to = rt.getTexture();
 
 }
+
+bool TransitionScene::updateTransitionTime(float dt) {
+    m_currenttime += dt;
+    m_p = m_currenttime/m_totaltime;
+    return m_p > 1.0;
+}

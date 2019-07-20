@@ -24,6 +24,10 @@ namespace scene {
     const std::string OverlayBegin = "ready";
 }
 
+namespace transition {
+    const std::string Fondu = "fondu";
+}
+
 namespace keymap {
     const sf::Keyboard::Key gonext = sf::Keyboard::Space;
 }

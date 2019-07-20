@@ -32,8 +32,66 @@ void TestTansition::draw(sf::RenderTarget &win) const {
 
 void TestTansition::load() {}
 
+void FonduTransition::load() {
+    auto box = m_context->getBox();
+    m_before.setSize(sf::Vector2f(box.width, box.height));
+    m_before.setPosition(0,0);
+    m_before.setFillColor(sf::Color::White);
+    m_after.setSize(sf::Vector2f(box.width, box.height));
+    m_after.setPosition(0,0);
+    m_after.setFillColor(sf::Color::White);
+
+}
 
 
+void FonduTransition::_begin() {
+    m_currenttime=0.0;
+    m_before.setTexture(&m_from);
+    m_after.setTexture(&m_to);
+}
+
+void FonduTransition::_end() {
+
+}
+
+void FonduTransition::update(float dt) {
+    if( updateTransitionTime(dt)) {
+        end();
+        return;
+    }
+    m_after.setFillColor(sf::Color(255,255,255,m_p*255));
+}
+
+void FonduTransition::draw(sf::RenderTarget &win) const {
+    win.draw(m_before);
+    win.draw(m_after);
+}
+
+
+
+
+/*
+void FonduTransition::_begin() {
+
+}
+
+void FonduTransition::_end() {
+
+}
+
+void FonduTransition::update(float dt) {
+
+}
+
+void FonduTransition::draw(sf::RenderTarget &win) const {
+}
+
+void FonduTransition::load() {}
+
+
+ */
+
+/*
 void Transition::update() {
     m_timeElapsed += VODZO::deltaTime;
 
@@ -287,4 +345,4 @@ void RainTransition::update() {
     }
 
     m_mixer.update();
-}
+}*/

@@ -115,12 +115,6 @@ void SceneSwitcher::run() {
         for(auto it = m_onthefly.rbegin(); it != m_onthefly.rend(); ++it)
             (*it)->check_events(m_in);
 
-        if( m_onthefly.empty() ) {
-            if(m_next.empty())
-                return;
-            pushScene(m_next);
-            m_next.clear();
-        }
         //cout << "do update dt" << endl;
         for(auto it = m_onthefly.begin(); it != m_onthefly.end(); ++it) {
             (*it)->update(deltaTime);
@@ -128,6 +122,12 @@ void SceneSwitcher::run() {
                 (*it)->end();
                 m_onthefly.erase(it--);
             }
+        }
+        if( m_onthefly.empty() ) {
+            if(m_next.empty())
+                return;
+            pushScene(m_next);
+            m_next.clear();
         }
     }
     //cout << "draw" << endl;

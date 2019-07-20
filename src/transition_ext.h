@@ -6,51 +6,26 @@
 
 
 class TestTansition : public TransitionScene {
-
     public:
-        TestTansition(SceneSwitcher *p) : TransitionScene(p) {}
+        TestTansition(SceneSwitcher *p) : TransitionScene(p, 3) {}
         virtual ~TestTansition() {}
 
     DERIVED_Scene
 };
 
+class FonduTransition : public TransitionScene {
+    private:
+        sf::RectangleShape m_before, m_after;
+        sf::Color m_color;
+    public:
+        FonduTransition(SceneSwitcher *p) : TransitionScene(p, 3) {}
+        virtual ~FonduTransition() {}
 
-class Transition : public Scene {
-  public:
-    Transition(float t):Scene(), m_p(0.0), m_timeLimit(t), m_timeElapsed(0.0)
-        {}
-    virtual ~Transition() {};
-    virtual void update();
-    virtual void draw();
-
-  protected:
-    float  m_p,  m_timeLimit;
-
-  private:
-    float m_timeElapsed;
-    virtual void _init() {};
-
-};
-
-class FonduTransition : public Transition {
-  public:
-    FonduTransition(float t, SceneSwitcher *context) :
-        Transition(t) { setContext(context); }
-
-    virtual void draw();
-
-
-  private:
-    void load(Scene *sc_before, Scene *sc_after);
-
-    Sprite m_sp1, m_sp2;
-    VODZO::Color m_color;
-    virtual void _init();
-
+    DERIVED_Scene
 };
 
 
-
+/*
 
 class VerreTransition : public Transition {
     static const int SizeX;
@@ -130,6 +105,6 @@ class RainTransition : public Transition {
         virtual void draw();
         virtual void update();
 };
-
+*/
 
 #endif
