@@ -27,6 +27,7 @@ GUI_OBJ=$(SRCGUI)/widget.o \
 ENGINE_OBJ=$(SRCENGINE)/anim.o \
            $(SRCENGINE)/eventdispatcher.o \
 		   $(SRCENGINE)/input.o \
+		   $(SRCENGINE)/shapecontainer.o \
 		   $(SRCENGINE)/scene.o \
 		   $(SRCENGINE)/sceneswitcher.o \
 		   $(SRCENGINE)/transitionscene.o \

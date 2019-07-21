@@ -67,7 +67,24 @@ void FonduTransition::draw(sf::RenderTarget &win) const {
     win.draw(m_after);
 }
 
+/*
+void FonduTransition::_begin() {
 
+}
+
+void FonduTransition::_end() {
+
+}
+
+void FonduTransition::update(float dt) {
+
+}
+
+void FonduTransition::draw(sf::RenderTarget &win) const {
+}
+
+void FonduTransition::load() {}
+*/
 
 
 /*
@@ -135,25 +152,6 @@ void FonduTransition::_init() {
 
 }
 
-
-
-
-void FonduTransition::draw() {
-//    cout << m_p << endl;
-    m_color.a = 1.0 - m_p;
-    glColor4fv(&m_color.r);
-    m_sp1.draw(0,0,
-        Windows_width,
-        Windows_height);
-
-    m_color.a = m_p;
-    glColor4fv(&m_color.r);
-
-    m_sp2.draw(0,0,
-        Windows_width,
-        Windows_height);
-
-}
 
 const int VerreTransition::SizeX = 10;
 const int VerreTransition::SizeY = 7;
