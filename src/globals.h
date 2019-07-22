@@ -26,6 +26,7 @@ namespace scene {
 
 namespace transition {
     const std::string Fondu = "fondu";
+    const std::string Rain = "rain";
 }
 
 namespace keymap {

@@ -46,6 +46,7 @@ void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<HelpScreen>(scene::GlobalHelp);
     app.newTransition<TestTansition>("trans");
     app.newTransition<FonduTransition>(transition::Fondu);
+    app.newTransition<RainTransition>(transition::Rain);
 }
 
 int main()

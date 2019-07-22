@@ -3,7 +3,8 @@
 
 #include "engine/transitionscene.h"
 #include "engine/sceneswitcher.h"
-
+#include "engine/shapecontainer.h"
+#include "tween.h"
 
 class TestTansition : public TransitionScene {
     public:
@@ -24,46 +25,23 @@ class FonduTransition : public TransitionScene {
     DERIVED_Scene
 };
 
-/*
 class RainTransition : public TransitionScene {
     private:
-
-        static const int SizeX;
-        static const int SizeY;
-
-        struct SpriteContainer {
-            Sprite sp;
-            VODZO::Vector2 pos;
-            float angleZ, alpha;
-        };
-
-        std::vector< SpriteContainer > m_listeSprite;
-        std::vector< int > m_ordre, to_plot;
-        int m_current_sp;
-
-        Sprite sp_bg;
-        float dxf, dyf;
-
-        Organizer m_mixer;
-
-        void load(Scene *sc_before, Scene *sc_after);
-        void _captureScreen(SDL_Surface *img1);
-
-        virtual void _init();
+        int m_sizex, m_sizey;
+        ShapeContainer m_shapes;
+        TweenCollection m_actions;
 
     public:
-        RainTransition(float t, SceneSwitcher *context) : Transition(t) {
-                setContext(context);
-                m_listeSprite.resize(SizeX*SizeY);
+        RainTransition(SceneSwitcher *p) : 
+            TransitionScene(p, 3),
+            m_sizex(10),
+            m_sizey(10)
+        {}
 
-                dxf = static_cast<float>(Windows_width)/SizeX;
-                dyf = static_cast<float>(Windows_height)/SizeY;
-                m_current_sp = SizeX*SizeY;
-            }
-        virtual void draw();
-        virtual void update();
+        virtual ~RainTransition() {}
 
-*/
+    DERIVED_Scene
+};
 /*
 
 class VerreTransition : public Transition {

@@ -7,11 +7,11 @@
 class ShapeContainer {
     private:
         struct Shape {
-            sf::Vector2f pos;
-            float size, angle, alpha;
+            sf::Vector2f pos, size;
+            float angle, alpha;
 
-            Shape(sf::Vector2f v, float a, float b, float c) :
-                pos(v), size(a), angle(b), alpha(c) {}
+            Shape(sf::Vector2f v, sf::Vector2f s, float b, float c) :
+                pos(v), size(s), angle(b), alpha(c) {}
         };
 
         sf::VertexArray m_va;
@@ -36,13 +36,14 @@ class ShapeContainer {
         }*/
 
         void update(std::size_t i);
+        void update();
 
         void setTexture(sf::Texture *t) {
             m_texture = t;
         }
         
         void draw(sf::RenderTarget &win) const;
-        void add(sf::IntRect coord, sf::Vector2f pos, float angle, float s);
+        void add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle);
 
 };
 

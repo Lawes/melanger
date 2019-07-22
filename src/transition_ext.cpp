@@ -67,24 +67,39 @@ void FonduTransition::draw(sf::RenderTarget &win) const {
     win.draw(m_after);
 }
 
-/*
-void FonduTransition::_begin() {
+
+void RainTransition::_begin() {
+    auto b = m_from.getSize();
+    int dx = b.x/m_sizex, dy = b.y/m_sizey;
+
+    auto box = m_context->getBox();
+    float screendx = box.width/m_sizex, screendy = box.height/m_sizey;
+
+    m_shapes.clear();
+
+    for(int iy=0; iy<m_sizey; ++iy)
+    for(int ix=0; ix<m_sizex; ++ix) {
+        int px = ix*dx, py=iy*dy;
+        m_shapes.add({px, py, dx, dy}, {box.left+ix*screendx+screendx/2, box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 45);
+    }
+    m_shapes.setTexture(&m_from);
+    m_shapes.update();
+}
+
+void RainTransition::_end() {
 
 }
 
-void FonduTransition::_end() {
+void RainTransition::update(float dt) {
 
 }
 
-void FonduTransition::update(float dt) {
-
+void RainTransition::draw(sf::RenderTarget &win) const {
+    m_shapes.draw(win);
 }
 
-void FonduTransition::draw(sf::RenderTarget &win) const {
-}
+void RainTransition::load() {}
 
-void FonduTransition::load() {}
-*/
 
 
 /*

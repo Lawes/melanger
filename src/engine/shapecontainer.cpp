@@ -26,11 +26,11 @@ void ShapeContainer::update(std::size_t i) {
     float cosA = tableCosSin.Cos(shape.angle),
         sinA = tableCosSin.Sin(shape.angle);
     
-    sf::Vector2f up(cosA * 1.0f + sinA * 0.0f, -sinA * 1.0f + cosA * 0.0f), 
-        side(-up.y, up.x);
+    sf::Vector2f up(cosA * 0.0f + sinA * 1.0f, -sinA * .0f + cosA * 1.0f), 
+        side(up.y, -up.x);
 
-	up *= shape.size;
-	side *= shape.size;
+	up *= shape.size.y;
+	side *= shape.size.x;
 
     sf::Vertex v1, v2, v3, v4;
     size_t iva = i*4;
@@ -45,7 +45,13 @@ void ShapeContainer::update(std::size_t i) {
     m_va[iva+3].color = col;
 }
 
-void ShapeContainer::add(sf::IntRect coord, sf::Vector2f pos, float angle, float s) {
+void ShapeContainer::update() {
+    for(size_t i=0; i<m_shapes.size(); ++i)
+        update(i);
+}
+
+
+void ShapeContainer::add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle) {
     m_shapes.emplace_back(pos, s, angle, 255.0f);
     sf::Vertex v;
     v.texCoords = sf::Vector2f(coord.left, coord.top);
