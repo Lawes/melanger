@@ -8,7 +8,7 @@
 
 class TestTansition : public TransitionScene {
     public:
-        TestTansition(SceneSwitcher *p) : TransitionScene(p, 3) {}
+        TestTansition(SceneSwitcher *p) : TransitionScene(p, 2) {}
         virtual ~TestTansition() {}
 
     DERIVED_Scene
@@ -19,7 +19,7 @@ class FonduTransition : public TransitionScene {
         sf::RectangleShape m_before, m_after;
         sf::Color m_color;
     public:
-        FonduTransition(SceneSwitcher *p) : TransitionScene(p, 3) {}
+        FonduTransition(SceneSwitcher *p) : TransitionScene(p, 2) {}
         virtual ~FonduTransition() {}
 
     DERIVED_Scene
@@ -28,14 +28,12 @@ class FonduTransition : public TransitionScene {
 class RainTransition : public TransitionScene {
     private:
         int m_sizex, m_sizey;
-        ShapeContainer m_shapes;
+        ShapeContainer m_shapes1, m_shapes2;
         TweenCollection m_actions;
 
     public:
         RainTransition(SceneSwitcher *p) : 
-            TransitionScene(p, 3),
-            m_sizex(10),
-            m_sizey(10)
+            TransitionScene(p, 2)
         {}
 
         virtual ~RainTransition() {}

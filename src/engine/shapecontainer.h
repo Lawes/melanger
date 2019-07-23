@@ -30,10 +30,6 @@ class ShapeContainer {
         Shape& get(std::size_t i) {
             return m_shapes[i];
         }
-        /* 
-        Shape& get(std::size_t i) {
-           return m_shapes[i];
-        }*/
 
         void update(std::size_t i);
         void update();

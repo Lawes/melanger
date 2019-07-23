@@ -1,5 +1,9 @@
 #include "transition_ext.h"
+#include "libwam/random.h"
 
+#include <iostream>
+#include <cmath>
+using namespace std;
 
 void TestTansition::_begin() {
 
@@ -45,7 +49,7 @@ void FonduTransition::load() {
 
 
 void FonduTransition::_begin() {
-    m_currenttime=0.0;
+    beginTransitionTime();
     m_before.setTexture(&m_from);
     m_after.setTexture(&m_to);
 }
@@ -67,38 +71,75 @@ void FonduTransition::draw(sf::RenderTarget &win) const {
     win.draw(m_after);
 }
 
+sf::Vector2f randomVector(float r) {
+    float angle = Random::Percent()*360.0f;
+    return sf::Vector2f( r*std::cos(angle), r*std::sin(angle));
+}
 
 void RainTransition::_begin() {
+    beginTransitionTime();
     auto b = m_from.getSize();
     int dx = b.x/m_sizex, dy = b.y/m_sizey;
 
     auto box = m_context->getBox();
     float screendx = box.width/m_sizex, screendy = box.height/m_sizey;
 
-    m_shapes.clear();
+    m_actions.clear();
+    m_shapes1.clear();
+    m_shapes2.clear();
 
     for(int iy=0; iy<m_sizey; ++iy)
     for(int ix=0; ix<m_sizex; ++ix) {
         int px = ix*dx, py=iy*dy;
-        m_shapes.add({px, py, dx, dy}, {box.left+ix*screendx+screendx/2, box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 45);
+        m_shapes1.add({px, py, dx, dy}, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0);
+        m_shapes2.add(
+            {px, py, dx, dy},
+            sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width),
+            {screendx/2,screendy/2},
+            Random::Float(0,360));
     }
-    m_shapes.setTexture(&m_from);
-    m_shapes.update();
+    int count=0;
+    for(int iy=0; iy<m_sizey; ++iy)
+    for(int ix=0; ix<m_sizex; ++ix, ++count) {
+        auto &s1 = m_shapes1.get(count);
+        m_actions.To(&(s1.pos), sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width), m_totaltime);
+        m_actions.To(&(s1.angle), Random::Float(0,360), m_totaltime);        
+        auto &s2 = m_shapes2.get(count);
+        m_actions.To(&(s2.pos), {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, m_totaltime/2);
+        m_actions.To(&(s2.angle), 0.0f, m_totaltime/2);
+    }
+    
+
+    m_shapes1.setTexture(&m_from);
+    m_shapes2.setTexture(&m_to);
+    m_actions.start();
+
 }
 
 void RainTransition::_end() {
-
+    m_actions.finish();
 }
 
 void RainTransition::update(float dt) {
 
+    m_actions.update(dt);
+    m_shapes2.update();
+    m_shapes1.update();
+    if(updateTransitionTime(dt)) {
+        end();
+        return;
+    }
 }
 
 void RainTransition::draw(sf::RenderTarget &win) const {
-    m_shapes.draw(win);
+    m_shapes2.draw(win);
+    m_shapes1.draw(win);
 }
 
-void RainTransition::load() {}
+void RainTransition::load() {
+    m_sizex=50;
+    m_sizey=50;
+}
 
 
 

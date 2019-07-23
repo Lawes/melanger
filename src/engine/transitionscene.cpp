@@ -25,6 +25,11 @@ void TransitionScene::setFromToTexture(const string &nextname) {
 
 }
 
+void TransitionScene::beginTransitionTime() {
+    m_currenttime = 0;
+    m_p = 0;
+}
+
 bool TransitionScene::updateTransitionTime(float dt) {
     m_currenttime += dt;
     m_p = m_currenttime/m_totaltime;

@@ -9,6 +9,7 @@ class TransitionScene : public Scene {
         float m_totaltime, m_currenttime, m_p;
         sf::Texture m_from, m_to;
 
+        void beginTransitionTime();
         bool updateTransitionTime(float dt)    ;
 
     
