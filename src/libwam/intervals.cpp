@@ -80,14 +80,12 @@ void IntervalAction::_finish() {
 
 bool IntervalAction::_update() {
     m_timeElapsed += m_dt;
-
-    if (m_timeElapsed >= m_timeLimit) {
-        finish();
-        return true;
-    }
-
-    float p = (m_timeElapsed/m_timeLimit);
+    bool ended = m_timeElapsed >= m_timeLimit;
+    float p = ended?1.0f:m_timeElapsed/m_timeLimit;
     _doAction(p);
+
+    if(ended)
+        finish();
     return isFinished();
 }
 
