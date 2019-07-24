@@ -40,6 +40,7 @@ class ShapeContainer {
         
         void draw(sf::RenderTarget &win) const;
         void add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle);
+        void add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle, float alpha);
 
 };
 

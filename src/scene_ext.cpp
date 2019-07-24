@@ -102,7 +102,7 @@ void PresentationScene::load() {
         [this]{
             cout << "help" << endl;
             //m_context->switchScene(scene::GlobalHelp);
-            m_context->switchSceneWithTransition(scene::GlobalHelp, transition::Rain);
+            m_context->switchSceneWithTransition(scene::GlobalHelp, "verre");
         }
     );
     add_event(w->getBox(), [w]{ w->select();}, [w]{w->unSelect();});

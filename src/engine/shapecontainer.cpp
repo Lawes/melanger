@@ -52,7 +52,11 @@ void ShapeContainer::update() {
 
 
 void ShapeContainer::add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle) {
-    m_shapes.emplace_back(pos, s, angle, 255.0f);
+    add(coord, pos, s, angle, 255.0f);
+}
+
+void ShapeContainer::add(sf::IntRect coord, sf::Vector2f pos, sf::Vector2f s, float angle, float alpha) {
+    m_shapes.emplace_back(pos, s, angle, alpha);
     sf::Vertex v;
     v.texCoords = sf::Vector2f(coord.left, coord.top);
     m_va.append(v);

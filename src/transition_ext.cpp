@@ -1,3 +1,5 @@
+#include <SFML/OpenGL.hpp>
+
 #include "transition_ext.h"
 #include "libwam/random.h"
 
@@ -22,7 +24,6 @@ void TestTansition::draw(sf::RenderTarget &win) const {
 
     s1.setSize(sf::Vector2f(200,200));
     s2.setSize(sf::Vector2f(200,200));
-
 
     s1.setTexture(&m_from);
     s2.setTexture(&m_to);
@@ -136,78 +137,89 @@ void RainTransition::draw(sf::RenderTarget &win) const {
 void RainTransition::load() {
     m_sizex=50;
     m_sizey=50;
-}
-
-
-
-/*
-void FonduTransition::_begin() {
 
 }
 
-void FonduTransition::_end() {
+void VerreTransition::_begin() {
+    beginTransitionTime();
+    auto b = m_from.getSize();
+    float dx = static_cast<float>(b.x)/m_sizex, dy = static_cast<float>(b.y)/m_sizey;
 
-}
+    auto box = m_context->getBox();
+    float screendx = box.width/m_sizex, screendy = box.height/m_sizey;
 
-void FonduTransition::update(float dt) {
+    m_actions.clear();
+    m_shapes1.clear();
+    m_shapes2.clear();
 
-}
-
-void FonduTransition::draw(sf::RenderTarget &win) const {
-}
-
-void FonduTransition::load() {}
-
-
- */
-
-/*
-void Transition::update() {
-    m_timeElapsed += VODZO::deltaTime;
-
-    if( m_timeElapsed >= m_timeLimit) {
-        m_timeElapsed=m_timeLimit;
-        end();
+    for(int iy=0; iy<m_sizey; ++iy)
+    for(int ix=0; ix<m_sizex; ++ix) {
+        float px = dx*ix+0.5f, py=dy*iy+0.5f;
+        sf::IntRect rect(px, py, dx+0.5f, dy+0.5f);
+        m_shapes1.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0, 255.0f);
+        m_shapes2.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0, 0.0f);
     }
-    m_p = m_timeElapsed/m_timeLimit;
+    m_shapes1.setTexture(&m_from);
+    m_shapes2.setTexture(&m_to);
+}
+
+void VerreTransition::_end() {
+    m_actions.finish();
+}
+
+void VerreTransition::update(float dt) {
+    m_actions.update(dt);
+    m_shapes2.update();
+    m_shapes1.update();
+    if( updateTransitionTime(dt))
+        end();
+}
+
+void VerreTransition::draw(sf::RenderTarget &win) const {
+    m_shapes2.draw(win);
+    m_shapes1.draw(win);
+    win.draw(m_va);
+}
+
+void VerreTransition::load() {
+    m_sizex=50;
+    m_sizey=50;
+    auto box = m_context->getBox();
+    float screendx = box.width/m_sizex, screendy = box.height/m_sizey;
+
+	glEnable(GL_LINE_SMOOTH);
+	glLineWidth(2.0);
+    for(int ix=0; ix<m_sizex; ix++) {
+        sf::Vertex v1, v2;
+        v1.position = sf::Vector2f(box.left+ix*screendx,box.top);
+        v2.position = sf::Vector2f(box.left+ix*screendx,box.top+box.height);
+        v1.color = sf::Color(0,0,0);
+        v2.color = sf::Color(0,0,0);
+        m_va.append(v1);
+        m_va.append(v2);
+    }
+    for(int iy=0; iy<m_sizey; iy++) {
+        sf::Vertex v1, v2;
+        v1.position = sf::Vector2f(box.left, box.top+screendy*iy);
+        v2.position = sf::Vector2f(box.left+box.width,box.top+screendy*iy);
+        v1.color = sf::Color(0,0,0);
+        v2.color = sf::Color(0,0,0);
+        m_va.append(v1);
+        m_va.append(v2);
+    }
 }
 
 
-void Transition::draw() {
-    int x = 700;
-    int y = 0;
-    int w = 50;
-    int h = static_cast<int>(500.0 );
+/*
+void FonduTransition::_begin() { }
+void FonduTransition::_end() { }
+void FonduTransition::update(float dt) { }
+void FonduTransition::draw(sf::RenderTarget &win) const { }
+void FonduTransition::load() {}
+*/
 
-    glColor3d(0, 0, 1);
-    glBegin(GL_QUADS);
-    glVertex2i(x,y);
-    glVertex2i(x+w,y);
-    glVertex2i(x+w,y+h);
-    glVertex2i(x,y+h);
-    glEnd();
+/*
 
-    glColor3d(0, 1, 0);
-    glBegin(GL_LINE_LOOP);
-    glVertex2i(x,y);
-    glVertex2i(x+w,y);
-    glVertex2i(x+w,y+h);
-    glVertex2i(x,y+h);
-    glEnd();
-
-
-}
-
-void FonduTransition::_init() {
-    load(m_context->getCurrent(), m_context->getNext());
-
-    m_color = Color(1,1,1,0);
-
-}
-
-
-const int VerreTransition::SizeX = 10;
-const int VerreTransition::SizeY = 7;
 
 
 void VerreTransition::_captureScreen(SDL_Surface *img1, SDL_Surface *img2) {
