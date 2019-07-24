@@ -79,7 +79,7 @@ sf::Vector2f randomVector(float r) {
 void RainTransition::_begin() {
     beginTransitionTime();
     auto b = m_from.getSize();
-    int dx = b.x/m_sizex, dy = b.y/m_sizey;
+    float dx = static_cast<float>(b.x)/m_sizex, dy = static_cast<float>(b.y)/m_sizey;
 
     auto box = m_context->getBox();
     float screendx = box.width/m_sizex, screendy = box.height/m_sizey;
@@ -90,26 +90,26 @@ void RainTransition::_begin() {
 
     for(int iy=0; iy<m_sizey; ++iy)
     for(int ix=0; ix<m_sizex; ++ix) {
-        int px = ix*dx, py=iy*dy;
-        m_shapes1.add({px, py, dx, dy}, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0);
+        float px = dx*ix+0.5f, py=dy*iy+0.5f;
+        sf::IntRect rect(px, py, dx+0.5f, dy+0.5f);
+        m_shapes1.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0);
         m_shapes2.add(
-            {px, py, dx, dy},
+            rect,
             sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width),
             {screendx/2,screendy/2},
-            Random::Float(0,360));
+            Random::Float(-180,180));
     }
     int count=0;
     for(int iy=0; iy<m_sizey; ++iy)
     for(int ix=0; ix<m_sizex; ++ix, ++count) {
         auto &s1 = m_shapes1.get(count);
         m_actions.To(&(s1.pos), sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width), m_totaltime);
-        m_actions.To(&(s1.angle), Random::Float(0,360), m_totaltime);        
+        m_actions.To(&(s1.angle), Random::Float(-180,-180), m_totaltime);        
         auto &s2 = m_shapes2.get(count);
         m_actions.To(&(s2.pos), {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, m_totaltime/2);
         m_actions.To(&(s2.angle), 0.0f, m_totaltime/2);
     }
     
-
     m_shapes1.setTexture(&m_from);
     m_shapes2.setTexture(&m_to);
     m_actions.start();
@@ -121,14 +121,11 @@ void RainTransition::_end() {
 }
 
 void RainTransition::update(float dt) {
-
     m_actions.update(dt);
     m_shapes2.update();
     m_shapes1.update();
-    if(updateTransitionTime(dt)) {
+    if( updateTransitionTime(dt))
         end();
-        return;
-    }
 }
 
 void RainTransition::draw(sf::RenderTarget &win) const {
