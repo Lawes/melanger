@@ -157,10 +157,22 @@ void VerreTransition::_begin() {
         float px = dx*ix+0.5f, py=dy*iy+0.5f;
         sf::IntRect rect(px, py, dx+0.5f, dy+0.5f);
         m_shapes1.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0, 255.0f);
-        m_shapes2.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {screendx/2,screendy/2}, 0, 0.0f);
+        m_shapes2.add(rect, {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, {0.0f,0.0f}, 0, 0.0f);
     }
     m_shapes1.setTexture(&m_from);
     m_shapes2.setTexture(&m_to);
+
+    int count=0;
+    for(int iy=0; iy<m_sizey; ++iy)
+    for(int ix=0; ix<m_sizex; ++ix, ++count) {
+        auto &s1 = m_shapes1.get(count);
+        auto &s2 = m_shapes2.get(count);
+        float t1 = Random::Percent()*m_totaltime/2;
+        m_actions.To(&(s1.alpha), 0.0f, m_totaltime);
+        m_actions.To(&(s2.alpha), 255.0f, m_totaltime);
+        m_actions.To(&(s1.size), {0.0f, 0.0f}, t1, [this, &s2, screendx, screendy, t1]{m_actions.To(&(s2.size), {screendx/2,screendy/2}, m_totaltime-t1);});
+    }
+    m_actions.start();
 }
 
 void VerreTransition::_end() {
