@@ -44,10 +44,9 @@ void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
     app.newScene<ExitScreen>(scene::GlobalExit);
     app.newScene<EndGameScreen>(scene::ScoreGame);
     app.newScene<HelpScreen>(scene::GlobalHelp);
-    app.newTransition<TestTansition>("trans");
     app.newTransition<FonduTransition>(transition::Fondu);
     app.newTransition<RainTransition>(transition::Rain);
-    app.newTransition<VerreTransition>("verre");
+    app.newTransition<VerreTransition>(transition::Verre);
 }
 
 int main()
@@ -75,7 +74,6 @@ int main()
     SceneSwitcher app(window);
 
     loadScenes(app, fullbox);
-    GB.beginRun("test");
 
     app.switchScene(scene::GlobalPresentation);
 

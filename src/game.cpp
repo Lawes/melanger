@@ -90,7 +90,7 @@ void Game::load() {
         sf::Mouse::Left,
         w->getBox(),
         [this]{
-            m_context->switchScene(scene::GlobalPresentation);
+            m_context->switchSceneWithTransition(scene::GlobalPresentation, transition::Verre);
         }
     );    
     m_panel_hintquit.add_child(w, gui::HALIGN_LEFT);

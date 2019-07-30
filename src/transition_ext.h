@@ -6,14 +6,6 @@
 #include "engine/shapecontainer.h"
 #include "tween.h"
 
-class TestTansition : public TransitionScene {
-    public:
-        TestTansition(SceneSwitcher *p) : TransitionScene(p, 2) {}
-        virtual ~TestTansition() {}
-
-    DERIVED_Scene
-};
-
 class FonduTransition : public TransitionScene {
     private:
         sf::RectangleShape m_before, m_after;

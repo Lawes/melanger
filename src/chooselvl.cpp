@@ -68,7 +68,7 @@ void ChooseLvl::_begin() {
             vp->getBox(),
             [this, name]{
                 GB.beginRun(name);
-                m_context->switchScene(scene::LaunchGame);
+                m_context->switchSceneWithTransition(scene::LaunchGame, transition::Fondu);
             }
         );
 
@@ -86,7 +86,7 @@ void ChooseLvl::_begin() {
         sf::Mouse::Left,
         w->getBox(),
         [this]{
-            m_context->switchScene(scene::GlobalPresentation);
+            m_context->switchSceneWithTransition(scene::GlobalPresentation, transition::Verre);
         }
     ); 
     m_panel.add_child(w);
