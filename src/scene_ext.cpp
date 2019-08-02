@@ -39,7 +39,7 @@ void PresentationScene::update(float dt) {
     m_calme.update(dt);
 
     if( m_time < 0.0f) {
-        m_board.processRandomMove();
+        m_board.processRandomMove(false);
         m_time = Random::Percent()/2;
     }
 }

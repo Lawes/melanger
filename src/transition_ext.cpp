@@ -74,11 +74,19 @@ void RainTransition::_begin() {
     for(int iy=0; iy<m_sizey; ++iy)
     for(int ix=0; ix<m_sizex; ++ix, ++count) {
         auto &s1 = m_shapes1.get(count);
-        m_actions.To(&(s1.pos), sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width), m_totaltime);
-        m_actions.To(&(s1.angle), Random::Float(-180,-180), m_totaltime);        
         auto &s2 = m_shapes2.get(count);
-        m_actions.To(&(s2.pos), {box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2}, m_totaltime/2);
-        m_actions.To(&(s2.angle), 0.0f, m_totaltime/2);
+        float t1 = Random::Percent()*m_totaltime/2;
+        sf::Vector2f pos(box.left+ix*screendx+screendx/2,box.top+iy*screendy+screendy/2);
+        m_actions.To(
+            &(s1.pos),
+            sf::Vector2f(box.left+box.width/2, box.top+box.height/2)+randomVector( box.width/2*1.4),
+            t1,
+            [this, &s2, pos, t1]{
+                m_actions.To(&(s2.pos), pos, m_totaltime-t1);
+                m_actions.To(&(s2.angle), 0.0f, m_totaltime-t1);
+            });
+        m_actions.To(&(s1.angle), Random::Float(-180,-180), t1);
+        //m_actions.To(&(s2.angle), 0.0f, m_totaltime/2);
     }
     
     m_shapes1.setTexture(&m_from);
@@ -140,7 +148,7 @@ void VerreTransition::_begin() {
         float t1 = Random::Percent()*m_totaltime/2;
         m_actions.To(&(s1.alpha), 0.0f, m_totaltime);
         m_actions.To(&(s2.alpha), 255.0f, m_totaltime);
-        m_actions.To(&(s1.size), {0.0f, 0.0f}, t1, [this, &s2, screendx, screendy, t1]{m_actions.To(&(s2.size), {screendx/2,screendy/2}, m_totaltime-t1);});
+        m_actions.To(&(s1.size), {0.0f, 0.0f}, t1, [this, &s2, screendx, screendy, t1]{m_actions.To(&(s2.size), {screendx/2,screendy/2}, t1);});
     }
     m_actions.start();
 }
@@ -160,7 +168,7 @@ void VerreTransition::update(float dt) {
 void VerreTransition::draw(sf::RenderTarget &win) const {
     m_shapes2.draw(win);
     m_shapes1.draw(win);
-    win.draw(m_va);
+    //win.draw(m_va);
 }
 
 void VerreTransition::load() {

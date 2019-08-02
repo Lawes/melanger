@@ -121,6 +121,8 @@ void Game::setGame() {
     m_hintshape.setTextcoords(sf::FloatRect(0,0,s.x, s.y));
     m_hintshape.select(false);
 
+    m_board.doShuffle();
+
 }
 
 void Game::launch_hint(bool open) {
@@ -176,7 +178,7 @@ void Game::build_panel() {
 
 
 void Game::click() {
-    if( m_currentSelect<0)
+    if( m_currentSelect<0 || isPaused())
         return;
 
     if( m_s1 == m_currentSelect) {
@@ -216,10 +218,15 @@ void Game::_begin() {
     m_currentSelect = -1;
     m_s1=-1;
     m_s2=-1;
+
+    build_panel();
+
+    m_actions.add(new IntervalAction(1, [this]{m_board.doShuffle();}));
+    m_actions.add(new IntervalAction(2, [this]{m_board.doShuffle();}));
+    m_actions.add(new IntervalAction(4, [this]{resume();}));
     m_actions.start();
     m_board.start();
     m_zobs.start();
-    resume();
 }
 
 void Game::_end() {
@@ -230,14 +237,17 @@ void Game::_end() {
 }
 
 void Game::update(float dt) {
-    m_time_elapsed += dt;
     m_zobs.update(dt);
     m_hintshape.update();
 
     m_actions.update(dt);
+    m_board.update(dt);
+    build_panel();
 
     if( isPaused() )
         return;
+
+    m_time_elapsed += dt;
 
     auto &in = m_context->getInput();
     auto current = m_board.findshape(in.MouseX(), in.MouseY());
@@ -250,15 +260,11 @@ void Game::update(float dt) {
         m_currentSelect = current;
     }
 
-    m_board.update(dt);
-
     m_random_timer -= dt;
     if( m_random_timer < 0.0f ) {
         m_board.processRandomMove();
         m_random_timer = m_randtime;
     }
-
-    build_panel();
 
     if( m_board.isFinished() ) {
         m_actions.clear();
@@ -272,7 +278,7 @@ void Game::update(float dt) {
             [this]{
                 cout << "end score" << endl;
                 m_panel_endgame.setVisible(false);
-                m_context->switchScene(scene::ScoreGame);
+                m_context->switchSceneWithTransition(scene::ScoreGame, transition::Fondu);
             }
         ));
         m_actions.start();

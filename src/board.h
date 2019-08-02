@@ -26,9 +26,11 @@ class Board : public GameObject {
         int findshape(float x, float y) const;
         BoardShape& getShape(int i);
 
+        void doShuffle();
+
         void processEchange(int i1, int i2, bool random=false);
         void processRotation(int i, SensRotation sens, bool random=false);
-        void processRandomMove();
+        void processRandomMove(bool keepgood=true);
 
     private:
         void lastMove(int id);

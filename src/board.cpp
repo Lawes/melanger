@@ -75,12 +75,10 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
     m_shapes.clear();
     m_shapes.resize(nsx*nsy);
     m_lastmove.clear();
-    vector<size_t> indice(m_shapes.size());
 
     size_t id=0;
     for(int iy=0; iy<nsy; ++iy) {
         for(int ix=0; ix<nsx; ++ix, ++id) {
-            indice[id] = id;
             m_lastmove.push_back(id);
             BoardShape& shape = m_shapes[id];
             shape.setTextcoords(sf::FloatRect(textsize*ix, textsize*iy, textsize, textsize));
@@ -88,11 +86,25 @@ void Board::init(const string& imgname, const sf::FloatRect& box, int nsx, int n
         }
     }
 
-    random_shuffle(indice.begin(), indice.end());
-
     for(size_t i=0; i<m_shapes.size(); ++i)
-        m_shapes[i].init(i+1, indice[i], Random::Int(0, 3), getVectorFromPos(indice[i]), 0.47*m_taille);
+        m_shapes[i].init(i+1, i, 0, getVectorFromPos(i), 0.47*m_taille);
 
+}
+
+void Board::doShuffle() {
+    vector<size_t> indice(m_shapes.size());
+    for(size_t i=0; i<m_shapes.size(); ++i)
+        indice[i] = i;
+    random_shuffle(indice.begin(), indice.end());
+    for(size_t i=0; i<m_shapes.size(); ++i) {
+        processEchange(i, indice[i], true);
+        if( Random::Percent() > 0.5f) 
+            for(int n=0; n<Random::Int(0,3); ++n)
+                processRotation(i, SensRotation::Plus, true);
+        else
+            for(int n=0; n<Random::Int(0,3); ++n)
+                processRotation(i, SensRotation::Moins, true);
+    }
 }
 
 int Board::findshape(float x, float y) const {
@@ -171,10 +183,10 @@ void Board::processRotation(int indice, Board::SensRotation sens, bool random) {
 	//Mixer::play("s");
 }
 
-void Board::processRandomMove() {
+void Board::processRandomMove(bool keepgood) {
     vector<int> v;
     for(auto &s:m_shapes) {
-        if(!s.good() && s.isFixed())
+        if(!(keepgood && s.good()) && s.isFixed())
             v.push_back(s.getState().id);
     }
 
