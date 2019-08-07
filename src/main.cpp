@@ -35,6 +35,15 @@ void loadRessources() {
     for( const auto& name: globalcfg.getSections()) {
         RM.addTexture(name, GB.getConfig(name).imgfile);
     }
+
+    RM.addSound("bravo", "assets/sounds/bravo.ogg");
+	RM.addSound("s1", "assets/sounds/Forge.ogg");
+	RM.addSound("s2", "assets/sounds/laser.ogg");
+	RM.addSound("s",  "assets/sounds/sabre.ogg");
+	RM.addSound("f1", "assets/sounds/fireworks1.ogg");
+	RM.addSound("f2", "assets/sounds/fireworks2.ogg");
+	RM.addSound("f3", "assets/sounds/fireworks3.ogg");
+
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
@@ -60,7 +69,7 @@ int main()
                             sf::Style::Titlebar | sf::Style::Close);
     window.setVerticalSyncEnabled(true);
 
-    //MIXER.setVolume(30);
+    MIXER.setVolume(20);
 
     sf::FloatRect nullbox, fullbox(0, 0, gameWidth, gameHeight);
 

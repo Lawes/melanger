@@ -158,7 +158,7 @@ void Board::processEchange(int i1, int i2, bool random) {
 
     lastMove(i1);
     lastMove(i2);
-	//Mixer::play("s");
+    MIXER_PLAY("s")
 
 }
 
@@ -180,7 +180,7 @@ void Board::processRotation(int indice, Board::SensRotation sens, bool random) {
         [this,indice](){m_shapes[indice].endRotation();});
 
     lastMove(indice);
-	//Mixer::play("s");
+	MIXER_PLAY("s")
 }
 
 void Board::processRandomMove(bool keepgood) {

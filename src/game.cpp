@@ -286,7 +286,7 @@ void Game::update(float dt) {
 }
 
 void Game::notifyVictoire() {
-    //MIXER.play("bravo");
+    MIXER_PLAY("bravo");
     auto nmoves=m_board.getNbMoves();
     int score = _getScore(m_time_elapsed, nmoves);
     GB.saveScore(score);

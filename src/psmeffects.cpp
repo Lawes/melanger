@@ -163,7 +163,7 @@ FeuxArtifice::FeuxArtifice(sf::FloatRect rec) :
 }
 
 void FeuxArtifice::paf(PSM::Vector v) {
-    //MIXER.play(*(Random::randIterator(m_explosounds.begin(),3)), Random::Percent()*30.0f);
+    MIXER_PLAY_VOL(*(Random::randIterator(m_explosounds.begin(),3)), Random::Percent()*30.0f);
     m_part.getEmitter().setColor(createRandomColor(), 0.3);
     m_part.getEmitter().setPos(v);
     m_part.addParticules(40);

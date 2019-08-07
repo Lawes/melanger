@@ -3,6 +3,7 @@
 
 #include "gui/decorator.h"
 #include "engine/ressourcemanager.h"
+#include "engine/mixer.h"
 #include "gamebuffer.h"
 
 #include <string>
@@ -12,6 +13,7 @@ extern RessourceManager RM;
 
 extern GameBuffer GB;
 
+extern Mixer MIXER;
 
 namespace scene {
     const std::string LaunchGame = "game";
@@ -37,4 +39,9 @@ namespace keymap {
 namespace colormap {
     const sf::Color titleColor = sf::Color(227,69,69);
 }
+
+
+#define MIXER_PLAY(name) MIXER.play(*RM.getSound(name));
+#define MIXER_PLAY_VOL(name, vol) MIXER.play(*RM.getSound(name), vol);
+
 #endif

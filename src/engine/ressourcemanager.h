@@ -31,6 +31,9 @@
             bool get(const std::string& id, name* &ressource) { \
                 ressource = m_ ## name.get(id); \
                 return ressource != nullptr; \
+            } \
+            name* get ## name (const std::string& id) {\
+                return m_ ## name.get(id); \
             }
 
 
@@ -49,10 +52,6 @@ class RessourceManager {
         bool get(const std::string& id, Anim* &ressource) {
             ressource = m_anim.get(id);
             return ressource != nullptr;
-        }
-
-        Texture* getTexture(const std::string& id) {
-            return m_Texture.get(id);
         }
 
     private:

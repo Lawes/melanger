@@ -5,6 +5,8 @@
 #include "boardshape.h"
 #include "libwam/geometry.h"
 
+#include "globals.h"
+
 using namespace std;
 
 const int cadreBaseColor = 150;
@@ -43,6 +45,7 @@ bool BoardShape::isFixed() const {
 void BoardShape::endMove() {
 	m_state.isMoving = false;
 	if( isFixed() ) setColor(sf::Color::Black);
+	if( good()) MIXER_PLAY("s1")
 }
 
 void BoardShape::endRotation() {
@@ -51,6 +54,7 @@ void BoardShape::endRotation() {
 	m_theta = BoardShape::_getRotation(m_state.irot);
 	//cout << "end rotation " << m_state.irot << ", deg: " << m_theta << endl;
 	if( isFixed() ) setColor(sf::Color::Black);
+	if( good()) MIXER_PLAY("s1")
 }
 
 void BoardShape::moveTo(int pos) {
