@@ -44,6 +44,15 @@ void loadRessources() {
 	RM.addSound("f2", "assets/sounds/fireworks2.ogg");
 	RM.addSound("f3", "assets/sounds/fireworks3.ogg");
 
+    RM.addName("finish", "assets/sounds/BitTripRunner.ogg");
+    RM.addName("m_forGame1", "assets/sounds/BTR_Impetus.ogg");
+    RM.addName("m_forGame2", "assets/sounds/BTR_Strength.ogg");
+    RM.addName("m_forGame3", "assets/sounds/JOST_SecretMinesofNewMadrid.ogg");
+    RM.addName("m_forGame4", "assets/sounds/MACHINA_GameboyTune.ogg");
+    RM.addName("intro", "assets/sounds/JOST_Intro.ogg");
+    RM.addName("brule", "assets/sounds/cabrule.ogg");
+    RM.addName("choose", "assets/sounds/JOST_Epilogue.ogg");
+
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {

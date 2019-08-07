@@ -42,6 +42,7 @@ namespace colormap {
 
 
 #define MIXER_PLAY(name) MIXER.play(*RM.getSound(name));
+#define MIXER_MUSIC(name) MIXER.music(RM.getName(name));
 #define MIXER_PLAY_VOL(name, vol) MIXER.play(*RM.getSound(name), vol);
 
 #endif

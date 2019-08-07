@@ -1,6 +1,7 @@
 #ifndef RESSOURCEMANAGER_HEADER
 #define RESSOURCEMANAGER_HEADER
 
+#include <map>
 #include <string>
 #include <iostream>
 #include <memory>
@@ -18,6 +19,7 @@
             typedef type name; \
             typedef Manager<name> M ## name; \
             bool add ## name (const std::string& id, const std::string& path) { \
+                addName(id, path); \
                 auto ptr = M ## name::PtrType(new name()); \
                 bool res = ptr->loadFromFile(path); \
                 if(res) m_ ## name.add(id, std::move(ptr)); \
@@ -54,7 +56,20 @@ class RessourceManager {
             return ressource != nullptr;
         }
 
+        bool addName(const std::string& id, const std::string& filename) {
+            m_names[id] = filename;
+            return true;
+        }
+
+        std::string getName(const std::string& id) {
+            auto it = m_names.find(id);
+            if( it == m_names.end())
+                return "";
+            return it->second;
+        }
+
     private:
+        std::map<std::string, std::string> m_names;
         MAnim m_anim;
 };
 
