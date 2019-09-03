@@ -5,6 +5,7 @@
 #include "engine/ressourcemanager.h"
 #include "engine/mixer.h"
 #include "gamebuffer.h"
+#include "jukebox.h"
 
 #include <string>
 
@@ -14,6 +15,8 @@ extern RessourceManager RM;
 extern GameBuffer GB;
 
 extern Mixer MIXER;
+
+extern Jukebox JUKE;
 
 namespace scene {
     const std::string LaunchGame = "game";

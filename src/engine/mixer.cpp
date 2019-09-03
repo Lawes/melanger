@@ -19,11 +19,15 @@ void Mixer::setVolume(int volume) {
     sf::Listener::setGlobalVolume(volume);
 }
 
+void Mixer::nomusic() {
+    m_music.stop();
+}
+
 void Mixer::nosound() {
     for(auto &s:m_sounds) {
         s.sound.stop();
     }
-    m_music.stop();
+    nomusic();
 }
 
 size_t Mixer::_findSound() const {

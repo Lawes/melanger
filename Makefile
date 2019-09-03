@@ -41,6 +41,7 @@ OBJ=$(SRC)/main.o \
 	$(SRC)/transition_ext.o \
 	$(SRC)/decorator_ext.o \
 	$(SRC)/board.o \
+	$(SRC)/jukebox.o \
 	$(SRC)/boardshape.o \
 	$(SRC)/psmeffects.o \
 	$(SRC)/gamebuffer.o \

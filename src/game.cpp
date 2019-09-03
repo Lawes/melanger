@@ -227,12 +227,14 @@ void Game::_begin() {
     m_actions.start();
     m_board.start();
     m_zobs.start();
+    JUKE.play();
 }
 
 void Game::_end() {
     m_actions.finish();
     m_board.stop();
     m_zobs.stop();
+    JUKE.stop();
     pause();
 }
 

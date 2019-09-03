@@ -24,6 +24,7 @@ class Mixer {
 
         void initTime();
         void nosound();
+        void nomusic();
         void play(sf::SoundBuffer& buffer, float vol=100.0f, bool loop=false);
         void music(const std::string& filename, float vol=100.0f, bool loop=false);
 

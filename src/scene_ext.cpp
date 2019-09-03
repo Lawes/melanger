@@ -23,7 +23,7 @@ PresentationScene::PresentationScene(SceneSwitcher *parent) :
 void PresentationScene::_begin() {
     m_board.start();
     m_time=1.0f;
-    //MIXER.play("begining", 100.0f, true);
+    MIXER_MUSIC("intro")
     m_calme.start();
 }
 

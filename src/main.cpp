@@ -53,6 +53,11 @@ void loadRessources() {
     RM.addName("brule", "assets/sounds/cabrule.ogg");
     RM.addName("choose", "assets/sounds/JOST_Epilogue.ogg");
 
+    JUKE.add_tag("m_forGame1");
+    JUKE.add_tag("m_forGame2");
+    JUKE.add_tag("m_forGame3");
+    JUKE.add_tag("m_forGame4");
+
 }
 
 void loadScenes(SceneSwitcher& app, sf::FloatRect& fullbox) {
@@ -97,6 +102,7 @@ int main()
 
     while (window.isOpen() && !app.wantExit())
     {
+        JUKE.check();
         app.run();
     }
 

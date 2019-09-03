@@ -7,3 +7,5 @@ RessourceManager RM;
 GameBuffer GB;
 
 Mixer MIXER;
+
+Jukebox JUKE;
